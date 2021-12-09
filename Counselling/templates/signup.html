@@ -1,0 +1,32 @@
+{% extends 'main.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <form method="POST">
+        {% csrf_token %}
+
+        {% if request.path == 'edit-user/' %}
+        <h3>Edit User</h3>
+        {% else %}
+        <h3>Signup</h3>
+        {% endif %}
+        
+        <div class="row">
+        {% for form in forms %}
+        <div class="col-4 mb-4 pt-2">
+            <label class="form-label">{{form.label}}</label> <br>
+            {{form}}
+        </div>
+        {% endfor %}
+        </div>
+
+        <div class="login-inp">
+            {% if request.path == 'signup/' %}
+            <input type="submit" name="create-course" value="Create">
+            {% else %}
+            <input type="submit" name="create-course" value="Update">
+            {% endif %}
+        </div>
+    </form>
+</div>
+{% endblock content %}

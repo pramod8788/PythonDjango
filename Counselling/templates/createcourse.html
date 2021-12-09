@@ -1,0 +1,52 @@
+{% extends 'main.html' %}
+
+{% block content %}
+<style>
+    .container input[type=text]{
+        width: 40%;
+        box-sizing: border-box;
+        border: 2px solid #ccc;
+        border-radius: 4px;
+        background-color: #f8f8f8;
+        font-size: 16px;
+    }
+    .container textarea {
+        width: 80%;
+        height: 100px;
+        padding: 2px 5px;
+        box-sizing: border-box;
+        border: 2px solid #ccc;
+        border-radius: 4px;
+        background-color: #f8f8f8;
+        font-size: 16px;
+        resize: none;
+    }
+</style>
+
+<div class="container mt-5">
+    <form method="POST">
+        {% csrf_token %}
+
+        {% if request.path == '/createCourse/' %}
+        <h3>Create Course</h3>
+        {% else %}
+        <h3>Edit Course</h3>
+        {% endif %}
+        
+        {% for form in forms %}
+        <div class="mb-4">
+            <label class="form-label">{{form.label}}</label> <br>
+            {{form}}
+        </div>
+        {% endfor %}
+
+        <div class="login-inp">
+            {% if request.path == '/createCourse/' %}
+            <input type="submit" name="create-course" value="Create">
+            {% else %}
+            <input type="submit" name="create-course" value="Update">
+            {% endif %}
+        </div>
+    </form>
+</div>
+{% endblock content %}

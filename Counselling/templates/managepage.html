@@ -1,0 +1,66 @@
+<style>
+    .manage a{
+        text-decoration: none;
+        color: bisque;
+    }
+
+    .manage a:hover{
+        color: aqua;
+    }
+</style>
+{% if request.user.is_superuser or request.user.is_staff %}
+
+    <div class="manage">
+        <a href="{% url 'course' %}">
+        {% if request.user.is_superuser %}
+            <h3>Manage Courses ({{courses.count}})</h3>
+        {% else %}
+            <h3>Manage Courses</h3>
+        {% endif %}
+        </a>
+        {% for course in courses|slice:":4" %}
+        {% if request.user == course.user or request.user.is_superuser %}
+
+        {% if course.course_isactive == True %}
+        <h5>{{course.course_name}}</h5>
+        {% endif %}
+
+        {% endif %}
+        {% endfor %}
+        
+        {% if not request.user.is_superuser %}
+
+        {% else %}
+        <hr>
+        <a href="{% url 'mentors' %}">
+        <h3>Manage Mentors ({{mentors.count}})</h3>
+        </a>
+        {% for mentor in mentors|slice:":4" %}
+        <h5>{{mentor.username}}</h5>
+        {% endfor %}
+        {% endif %}
+
+        <hr>
+        <a href="{% url 'students' %}">
+        {% if request.user.is_superuser %}
+        <h3>Manage Students ({{students.count}})</h3>
+        {% else %}
+        <h3>Manage Students</h3>
+        {% endif %}
+        </a>
+        {% for student in students|slice:":4" %}
+        <h5>{{student.username}}</h5>
+        {% endfor %}
+    </div>
+
+    {% else %}
+    <div class="manage">
+        <a href="{% url 'course' %}">
+        <h3>View all Courses</h3>
+        </a>
+        {% for course in courses|slice:":10" %}
+        <h5>{{course.course_name}}</h5>
+        {% endfor %}
+    </div>
+
+{% endif %}

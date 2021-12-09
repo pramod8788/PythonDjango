@@ -1,0 +1,45 @@
+/* main.html css start here */
+body{
+    color: white;
+    background-color: rgb(35, 35, 78);
+}
+
+.navbar{
+    background-color: rgb(21, 21, 46);
+}
+
+.nav-item a{
+    color: white;
+}
+
+.nav-item a:hover{
+    border-radius: 2%;
+    background-color: rgb(218, 216, 216);
+    color: rgb(22, 22, 51);
+}
+/* main.html css ends here */
+
+/* login.html start here  */
+.login-inp input{
+    margin-top: 2%;
+    font-size: large;
+    box-shadow: 1px 1px 10px 1px rgb(17, 4, 90);
+    transform: translateY(-2%);
+    border: none;
+    margin-right: 1%;
+    border-radius: 4%;
+    padding: 0.5%;
+    background-color: rgb(22, 22, 51);
+    color: white;
+}
+
+.login-inp input:hover{
+    background-color: white;
+    color: rgb(22, 22, 51);
+}
+/* login.html end here  */
+
+.container-dash{
+    display: grid;
+    grid-template-columns: 1fr 3fr;
+}

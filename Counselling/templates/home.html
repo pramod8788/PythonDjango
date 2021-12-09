@@ -1,0 +1,46 @@
+{% extends 'main.html' %}
+
+{% block content %}
+
+<div class="container-dash mt-5 mx-5">
+    {% include 'managepage.html' %}
+
+    <div class="dashboard mx-5">
+        <h3 class="text-center mb-4">New Courses</h3>
+        <hr>
+        {% for course in courses|slice:":8" %}
+
+        {% if course.course_isactive == True %}
+        <div class="row mb-2">
+            <div class="col">
+                
+                <h5>Course: {{course.course_name}}</h5>
+            </div>
+            <div class="col">
+                <h5>Created By: {{course.user.first_name}}</h5>
+            </div>
+            <div class="col">
+                {% if course.course_isactive == True %}
+                    <h5>Active</h5>
+                {% else %}
+                    <h5>Inactive</h5>
+                {% endif %}
+            </div>
+        </div>
+        <h5>Details:</h5>
+        <p>{{course.course_description}}</p>
+        
+        <div class="row mb-2">
+            <div class="col">
+                <h5>Created at: {{course.course_created|timesince}}</h5>
+            </div>
+            <div class="col">
+                <h5>Updated at: {{course.course_updated|timesince}}</h5>
+            </div>
+        </div>
+        <hr>
+        {% endif %}
+        {% endfor %}
+    </div>
+  </div>
+{% endblock content %}

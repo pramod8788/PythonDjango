@@ -1,0 +1,41 @@
+{% extends 'main.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row">
+        <div class="col pt-5">
+        <form method="POST">
+            {% csrf_token %}
+
+            <h3>Login/Signup</h3>
+            <div class="mb-3 pt-2 w-75">
+                <label class="form-label">Username</label>
+                <input type="text" class="form-control" name="username" id="exampleInputEmail1">
+            </div>
+
+            <div class="mb-3 w-75">
+                <label class="form-label">Password</label>
+                <input type="password" class="form-control" name="password" id="exampleInputPassword1">
+            </div>
+
+            <div class="login-inp">
+                <input type="submit" name="login" value="Login">
+                <a href="{% url 'signup' %}">
+                <input type="button" name="signup" value="Signup">
+                </a>
+            </div>
+        </form>
+        </div>
+
+        <div class="col pt-5">
+            <h1>Welcome!</h1>
+            <h4>
+                Lorem Ipsum is simply dummy text of the printing and typesetting 
+                industry. Lorem Ipsum has been the industry's standard dummy 
+                text ever since the 1500s, when an unknown printer took a galley
+                of type and scrambled it to make a type specimen book.
+            </h4>
+        </div>
+    </div>
+</div>
+{% endblock content %}

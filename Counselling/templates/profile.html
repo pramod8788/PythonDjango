@@ -1,0 +1,38 @@
+{% extends 'main.html' %}
+
+{% block content %}
+{% if user.is_authenticated %}
+<div class="container mt-5">
+
+    <div class="row mb-2">
+        <div class="col">
+            <h3>Username: @{{user.get_username}}</h3>
+        </div>
+    </div>
+
+    <div class="row mb-2">
+        <div class="col">
+            <h4>Name: {{user.get_full_name}}</h4>
+        </div>
+        <div class="col">
+            <h4>Email: {{user.email}}</h4>
+        </div>
+    </div>
+
+    <div class="row mb-5">
+        <div class="col">
+            <h4>Joined: {{user.date_joined}}</h4>
+        </div>
+        <div class="col">
+            <h4>Last Login: {{user.last_login|timesince}} ago</h4>
+        </div>
+    </div>
+
+    {% if request.user.is_staff %}
+    {% include 'coursecontent.html' %}
+    {% else %}
+    
+    {% endif %}
+</div>
+{% endif %}
+{% endblock content %}

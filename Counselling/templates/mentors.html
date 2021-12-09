@@ -1,0 +1,75 @@
+{% extends 'main.html' %}
+
+{% block content %}
+<style>
+    .login-inp a{
+        text-decoration: none;
+        margin-top: 2%;
+        font-size: large;
+        box-shadow: 1px 1px 10px 1px rgb(17, 4, 90);
+        transform: translateY(-2%);
+        border: none;
+        margin-right: 1%;
+        border-radius: 4%;
+        padding: 0.5%;
+        background-color: rgb(22, 22, 51);
+        color: white;
+    }
+    .login-inp a:hover{
+        background-color: white;
+        color: rgb(22, 22, 51);
+    }
+</style>
+
+<div class="container-dash mt-5 mx-5">
+    {% include 'managepage.html' %}
+
+    <div class="dashboard mx-5">
+        <h3 class="text-center mb-4">All Mentors</h3>
+        <hr>
+        {% for user in mentors %}
+        <div class="row mb-2">
+            <div class="col">
+                <h5>Name: {{user.first_name}}</h5>
+            </div>
+
+            <div class="col">
+                <h5>Email: {{user.email}}</h5>
+            </div>
+            
+            <div class="col-2">
+                {% if user.is_active == True %}
+                <h5>Active</h5>
+                {% else %}
+                <h5>Inactive</h5>
+                {% endif %}
+            </div>
+
+            {% if request.user == user or request.user.is_superuser %}
+            <div class="col-2">
+                <div class="login-inp">
+                    <a href="{% url 'edit-user' user.id %}" id="edit-btn">Edit</a>
+                </div>
+            </div>
+            {% else %}
+            <div class="col-2">
+                <div class="login-inp">
+                    <a href="{% url 'follow-user' user.id %}" id="edit-btn">Follow</a>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+        
+        <div class="row mb-2">
+            <div class="col">
+                <h5>Joined at: {{user.date_joined|timesince}}</h5>
+            </div>
+            <div class="col">
+                <h5>Last Login at: {{user.last_login|timesince}}</h5>
+            </div>
+        </div>
+        <hr>
+        {% endfor %}
+    </div>
+  </div>
+{% endblock content %}
