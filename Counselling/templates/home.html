@@ -2,6 +2,27 @@
 
 {% block content %}
 
+<style>
+    .login-inp a{
+        text-decoration: none;
+        padding: 5%;
+        margin-top: 2%;
+        font-size: large;
+        box-shadow: 1px 1px 10px 1px rgb(17, 4, 90);
+        transform: translateY(-2%);
+        border: none;
+        margin-right: 1%;
+        border-radius: 4%;
+        background-color: rgb(22, 22, 51);
+        color: white;
+    }
+    .login-inp a:hover{
+        background-color: white;
+        color: rgb(22, 22, 51);
+    }
+</style>
+
+
 <div class="container-dash mt-5 mx-5">
     {% include 'managepage.html' %}
 
@@ -19,6 +40,7 @@
             <div class="col">
                 <h5>Created By: {{course.user.first_name}}</h5>
             </div>
+            {% if request.user == course.user or request.user.is_superuser %}
             <div class="col">
                 {% if course.course_isactive == True %}
                     <h5>Active</h5>
@@ -26,16 +48,31 @@
                     <h5>Inactive</h5>
                 {% endif %}
             </div>
+            {% endif %}
+
+            {% if request.user == course.user or request.user.is_superuser %}
+            <div class="col-2">
+                <div class="login-inp">
+                    <a href="{% url 'edit-course' course.id %}" id="edit-btn">Edit</a>
+                </div>
+            </div>
+            {% else %}
+            <div class="col-2">
+                <div class="login-inp">
+                    <a href="{% url 'view-course' course.id %}" id="edit-btn">View</a>
+                </div>
+            </div>
+            {% endif %}
         </div>
         <h5>Details:</h5>
-        <p>{{course.course_description}}</p>
+        <p>{{course.course_description|slice:":200"}}...</p>
         
         <div class="row mb-2">
             <div class="col">
-                <h5>Created at: {{course.course_created|timesince}}</h5>
+                <h5>Created: {{course.course_created|timesince}}</h5>
             </div>
             <div class="col">
-                <h5>Updated at: {{course.course_updated|timesince}}</h5>
+                <h5>Updated: {{course.course_updated|timesince}}</h5>
             </div>
         </div>
         <hr>

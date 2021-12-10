@@ -1,6 +1,7 @@
 from django.db import models
+from django.db.models import fields
 from django.forms.models import ModelForm
-from . models import course
+from . models import course, applyforcourse
 from django.contrib.auth.models import User
 
 class courseForm(ModelForm):
@@ -18,9 +19,9 @@ class courseFormEdit(ModelForm):
 class userForm(ModelForm):
     class Meta:
         model = User
-        fields = ['username', 'password', 'first_name', 'last_name', 'email', 'groups']
+        fields = ['username', 'password', 'first_name', 'last_name', 'email', 'groups', 'is_staff']
 
 class userFormEdit(ModelForm):
     class Meta:
         model = User
-        fields = ['username', 'password', 'first_name', 'last_name', 'email', 'groups','is_staff', 'is_active']
+        fields = ['username', 'password', 'first_name', 'last_name', 'email', 'groups', 'is_staff', 'is_active']

@@ -1,0 +1,94 @@
+{% extends 'main.html' %}
+
+{% block content %}
+<style>
+    .login-inp a{
+        text-decoration: none;
+        padding: 5%;
+        margin-top: 2%;
+        font-size: large;
+        box-shadow: 1px 1px 10px 1px rgb(17, 4, 90);
+        transform: translateY(-2%);
+        border: none;
+        margin-right: 1%;
+        border-radius: 4%;
+        background-color: rgb(22, 22, 51);
+        color: white;
+    }
+    .login-inp a:hover{
+        background-color: white;
+        color: rgb(22, 22, 51);
+    }
+</style>
+
+<div class="container-dash mt-5 mx-5">
+    {% include 'managepage.html' %}
+
+    <div class="dashboard mx-5">
+        <h3 class="text-center mb-4">Course Details</h3>
+        <div class="row pt-4">
+            <div class="col mb-3">
+                <h4>Course: {{data.course_name}}</h4>
+            </div>
+            <div class="col mb-3">
+                <h5>Created By: {{data.user}}</h5>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col mb-3">
+                <h5>Created: {{data.course_created}}</h5>
+            </div>
+            <div class="col mb-3">
+                <h5>Updated: {{data.course_updated|timesince}} ago</h5>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col mb-3">
+                <h5>Description:</h5>
+                <h6>{{data.course_description}}</h6>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <h5>Applied By: Students</h5>
+            </div>
+            {% if request.user.is_authenticated %}
+            {% if not request.user.is_staff or not request.user.is_superuser%}
+            <div class="col-2">
+                <form action="{% url 'apply-course' %}" method="post">  
+                {% csrf_token %}            
+                {% if appliedcourse.course_id == data %}
+                <div class="login-inp">
+                    <input type="hidden" name="course" value="{{ course.id }}" readonly>
+                    <input type="hidden" name="value" value="unfollow" readonly>
+                    <input type="submit" value="Applied">
+                </div>
+
+                {% else %}
+                <div class="login-inp">
+                    <input type="hidden" name="course" value="{{ course.id }}" readonly>
+                    <input type="hidden" name="value" value="follow" readonly>
+                    <input type="submit" value="Apply">
+                </div>
+                {% endif %}
+            </form>
+            </div>
+            {% else %}
+            <div class="col-2"> 
+                <form action="{% url 'apply-course' %}" method="post"> 
+                {% csrf_token %}             
+                <div class="login-inp">
+                    <input type="hidden" name="course" value="{{ course.id }}" readonly>
+                    <input type="hidden" name="value" value="follow" readonly>
+                    <input type="submit" value="Apply">
+                </div>
+                </form>
+            </div>
+            {% endif %}
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock content %}

@@ -20,6 +20,7 @@ class course(models.Model):
 class follower(models.Model):
     mentor = models.CharField(max_length=150)
     student = models.CharField(max_length=150)
+    status = models.BooleanField(default=True)
 
 class applyforcourse(models.Model):
     user = models.ForeignKey(User, on_delete=SET_NULL, null=True)

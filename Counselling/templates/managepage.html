@@ -56,10 +56,13 @@
     {% else %}
     <div class="manage">
         <a href="{% url 'course' %}">
-        <h3>View all Courses</h3>
+            <h3>View all Courses</h3>
         </a>
+        
         {% for course in courses|slice:":10" %}
+        {% if course.course_isactive == True %}
         <h5>{{course.course_name}}</h5>
+        {% endif %}
         {% endfor %}
     </div>
 

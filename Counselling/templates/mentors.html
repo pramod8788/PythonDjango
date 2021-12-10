@@ -11,7 +11,7 @@
         border: none;
         margin-right: 1%;
         border-radius: 4%;
-        padding: 0.5%;
+        padding: 5%;
         background-color: rgb(22, 22, 51);
         color: white;
     }
@@ -53,9 +53,19 @@
             </div>
             {% else %}
             <div class="col-2">
+                {% for follower in followers %}
+                {% if follower.mentor == user.username and request.user == follower.student %}
+                <div class="login-inp">
+                    <a href="{% url 'follow-user' user.id %}" id="edit-btn">Unfollow</a>
+                </div>
+                {% elif follower.status == False %}
                 <div class="login-inp">
                     <a href="{% url 'follow-user' user.id %}" id="edit-btn">Follow</a>
                 </div>
+                {% else %}
+
+                {% endif %}
+                {% endfor %}
             </div>
             {% endif %}
         </div>

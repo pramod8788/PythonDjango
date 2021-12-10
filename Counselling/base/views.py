@@ -5,7 +5,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.http import HttpResponse
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from . models import course
+from . models import course, follower, applyforcourse
 from . forms import courseForm, userForm, courseFormEdit, userFormEdit
 
 def home(request):
@@ -75,9 +75,18 @@ def courseDetails(request):
     courses = course.objects.all()
     mentors = User.objects.filter(groups=1)
     students = User.objects.filter(groups=2)
-    context = {"courses":courses, "mentors":mentors, "students":students,}
+    applied_course = applyforcourse.objects.all()
+
+    context = {
+        "courses":courses, 
+        "mentors":mentors, 
+        "students":students,
+        "appliedcourse":applied_course,
+    }
     return render(request, 'course.html', context)
 
+
+@login_required(login_url='login')
 def editCourse(request, pk):
     data = course.objects.get(id=pk)
     forms = courseFormEdit(instance=data)
@@ -90,8 +99,43 @@ def editCourse(request, pk):
     context = {"forms":forms, "data":data}
     return render(request, 'createcourse.html', context)
 
-def applyCourse(request, pk):
-    return HttpResponse(pk)
+@login_required(login_url='login')
+def applyCourse(request):
+    if request.method == 'POST':
+        user = request.user        
+        course_id = request.POST.get('course')
+        courses = course.objects.get(id=course_id)
+        value = request.POST['value']
+        if value == "follow":
+            follow = applyforcourse.objects.create(user=user, course_id=courses)
+            follow.save()
+            return redirect('course')
+        else:
+            return HttpResponse("Error")
+
+def viewCourse(request,pk):
+    courses = course.objects.all()
+    mentors = User.objects.filter(groups=1)
+    students = User.objects.filter(groups=2)
+    data = course.objects.get(id=pk)
+    try:
+        applied_course = applyforcourse.objects.get(course_id=data)
+        context = {
+            "courses":courses, 
+            "mentors":mentors, 
+            "students":students,
+            "data":data,
+            "appliedcourse":applied_course,
+        }
+    except:
+        context = {
+            "courses":courses, 
+            "mentors":mentors, 
+            "students":students,
+            "data":data,
+        }
+
+    return render(request, 'coursedetails.html', context)
     
 @login_required(login_url='login')
 def profile(request):
@@ -109,12 +153,19 @@ def students(request):
     return render(request, 'students.html', context)
 
 def mentors(request):
+    followers = follower.objects.all()
     courses = course.objects.all()
     mentors = User.objects.filter(groups=1)
     students = User.objects.filter(groups=2)
-    context = {"courses":courses, "mentors":mentors, "students":students,}
+    context = {
+        "courses":courses, 
+        "mentors":mentors, 
+        "students":students, 
+        "followers":followers
+    }
     return render(request, 'mentors.html', context) 
 
+@login_required(login_url='login')
 def editUser(request, pk):
     data = User.objects.get(id=pk)
     forms = userFormEdit(instance=data)
@@ -127,5 +178,12 @@ def editUser(request, pk):
     context = {"forms":forms, "data":data}
     return render(request, 'signup.html', context)
 
+@login_required(login_url='login')
 def follow(request, pk):
-    return HttpResponse(pk)
+    mentor = User.objects.get(id=pk)
+    student = request.user
+    # st = f"{mentor} {student}"
+    # return HttpResponse(st)
+    followers = follower.objects.create(mentor=mentor, student=student)
+    followers.save()
+    return redirect('mentors')

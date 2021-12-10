@@ -1,11 +1,48 @@
 {% extends 'main.html' %}
 
 {% block content %}
+<style>
+    .container input[type=text]{
+        width: 80%;
+        box-sizing: border-box;
+        border: 2px solid #ccc;
+        border-radius: 4px;
+        background-color: #f8f8f8;
+        font-size: 16px;
+    }
+
+    .container input[type=email]{
+        width: 80%;
+        box-sizing: border-box;
+        border: 2px solid #ccc;
+        border-radius: 4px;
+        background-color: #f8f8f8;
+        font-size: 16px;
+    }
+
+    .container select {
+        width: 100%;
+        height: 50px;
+        padding: 2px 5px;
+        box-sizing: border-box;
+        border: 2px solid #ccc;
+        border-radius: 4px;
+        background-color: #f8f8f8;
+        font-size: 16px;
+        resize: none;
+    }
+
+    .container input[type=checkbox]{
+        width: 30px;
+        height: 30px;
+    }
+</style>
+
 <div class="container mt-5">
     <form method="POST">
         {% csrf_token %}
 
-        {% if request.path == 'edit-user/' %}
+        {% if request.path == '/edit-user/' %}
         <h3>Edit User</h3>
         {% else %}
         <h3>Signup</h3>
@@ -21,10 +58,10 @@
         </div>
 
         <div class="login-inp">
-            {% if request.path == 'signup/' %}
-            <input type="submit" name="create-course" value="Create">
-            {% else %}
+            {% if request.path == '/edit-user/' %}
             <input type="submit" name="create-course" value="Update">
+            {% else %}
+            <input type="submit" name="create-course" value="Signup">
             {% endif %}
         </div>
     </form>
