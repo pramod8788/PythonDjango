@@ -12,10 +12,11 @@ urlpatterns = [
     path('edit-course/<str:pk>/', views.editCourse, name='edit-course'),
     path('apply-course/', views.applyCourse, name='apply-course'),
     path('view-course/<str:pk>/', views.viewCourse, name='view-course'),
+    path('accept-course/<str:pk>/', views.acceptCourse, name='accept-course'),
 
     path('profile/', views.profile, name='profile'),
     path('students/', views.students, name='students'),
     path('mentors/', views.mentors, name='mentors'),
     path('edit-user/<str:pk>/', views.editUser, name='edit-user'),
-    path('follow-user/<str:pk>/', views.follow, name='follow-user'),
+    path('follow-user/', views.follow, name='follow-user'),
 ]

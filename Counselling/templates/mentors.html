@@ -28,6 +28,8 @@
         <h3 class="text-center mb-4">All Mentors</h3>
         <hr>
         {% for user in mentors %}
+
+        {% if request.user.is_superuser %}
         <div class="row mb-2">
             <div class="col">
                 <h5>Name: {{user.first_name}}</h5>
@@ -53,19 +55,26 @@
             </div>
             {% else %}
             <div class="col-2">
-                {% for follower in followers %}
-                {% if follower.mentor == user.username and request.user == follower.student %}
-                <div class="login-inp">
-                    <a href="{% url 'follow-user' user.id %}" id="edit-btn">Unfollow</a>
-                </div>
-                {% elif follower.status == False %}
-                <div class="login-inp">
-                    <a href="{% url 'follow-user' user.id %}" id="edit-btn">Follow</a>
-                </div>
+                {% if followers != None %}
+                <form action="{% url 'follow-user' %}" method="POST">  
+                    {% csrf_token %} 
+                    <div class="login-inp">
+                        <input type="hidden" name="mentor" value="{{user}}" readonly>
+                        <input type="hidden" name="value" value="unfollow" readonly>
+                        <input type="submit" value="Unfollow">
+                    </div>
+                    </form>
                 {% else %}
+                <form action="{% url 'follow-user' %}" method="POST">  
+                {% csrf_token %} 
+                <div class="login-inp">
+                    <input type="hidden" name="mentor" value="{{user}}" readonly>
+                    <input type="hidden" name="value" value="follow" readonly>
+                    <input type="submit" value="Follow">
+                </div>
+                </form>
 
                 {% endif %}
-                {% endfor %}
             </div>
             {% endif %}
         </div>
@@ -79,6 +88,70 @@
             </div>
         </div>
         <hr>
+
+        {% elif user.is_active == False %}
+
+
+        {% else %}
+        <div class="row mb-2">
+            <div class="col">
+                <h5>Name: {{user.first_name}}</h5>
+            </div>
+
+            <div class="col">
+                <h5>Email: {{user.email}}</h5>
+            </div>
+            
+            <div class="col-2">
+                {% if user.is_active == True %}
+                <h5>Active</h5>
+                {% else %}
+                <h5>Inactive</h5>
+                {% endif %}
+            </div>
+
+            {% if request.user == user or request.user.is_superuser %}
+            <div class="col-2">
+                <div class="login-inp">
+                    <a href="{% url 'edit-user' user.id %}" id="edit-btn">Edit</a>
+                </div>
+            </div>
+            {% else %}
+            <div class="col-2">
+                {% if user.username in ment %}
+                <form action="{% url 'follow-user' %}" method="POST">  
+                    {% csrf_token %} 
+                    <div class="login-inp">
+                        <input type="hidden" name="mentor" value="{{user}}" readonly>
+                        <input type="hidden" name="value" value="unfollow" readonly>
+                        <input type="submit" value="Unfollow">
+                    </div>
+                    </form>
+                {% else %}
+                <form action="{% url 'follow-user' %}" method="POST">  
+                {% csrf_token %} 
+                <div class="login-inp">
+                    <input type="hidden" name="mentor" value="{{user}}" readonly>
+                    <input type="hidden" name="value" value="follow" readonly>
+                    <input type="submit" value="Follow">
+                </div>
+                </form>
+
+                {% endif %}
+            </div>
+            {% endif %}
+        </div>
+        
+        <div class="row mb-2">
+            <div class="col">
+                <h5>Joined at: {{user.date_joined|timesince}}</h5>
+            </div>
+            <div class="col">
+                <h5>Last Login at: {{user.last_login|timesince}}</h5>
+            </div>
+        </div>
+        <hr>
+        {% endif %}
         {% endfor %}
     </div>
   </div>

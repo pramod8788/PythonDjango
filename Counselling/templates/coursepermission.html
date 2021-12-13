@@ -1,0 +1,51 @@
+{% extends 'main.html' %}
+
+{% block content %}
+<style>
+    .login-inp a{
+        text-decoration: none;
+        padding: 5%;
+        margin-top: 2%;
+        font-size: large;
+        box-shadow: 1px 1px 10px 1px rgb(17, 4, 90);
+        transform: translateY(-2%);
+        border: none;
+        margin-right: 1%;
+        border-radius: 4%;
+        background-color: rgb(22, 22, 51);
+        color: white;
+    }
+    .login-inp a:hover{
+        background-color: white;
+        color: rgb(22, 22, 51);
+    }
+    .dashboard input[type=checkbox]{
+        margin-left: 5%;
+        margin-right: 5%;
+        width: 20px;
+        height: 16px;
+    }
+</style>
+
+    <div class="dashboard mt-5 mx-5">
+        <h1>Give Permission to user for the course</h1>
+        <form method="POST">
+            {% csrf_token %}
+        <div class="row">
+            {% for form in forms %}
+            <div class="col-1 mb-4 pt-2">
+                <label class="form-label">{{form.label}}</label> <br>
+            </div>
+            <div class="col mb-4 pt-2">
+                {{form}}
+            </div>
+            {% endfor %}
+        </div>
+
+        <div class="login-inp">
+            <input type="submit" name="create-course" value="Update">
+        </div>
+    </form>
+    </div>
+
+{% endblock content %}

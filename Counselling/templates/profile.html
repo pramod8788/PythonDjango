@@ -1,12 +1,44 @@
 {% extends 'main.html' %}
 
 {% block content %}
+<style>
+    .login-inp a{
+        text-decoration: none;
+        margin-top: 2%;
+        font-size: large;
+        box-shadow: 1px 1px 10px 1px rgb(17, 4, 90);
+        transform: translateY(-2%);
+        border: none;
+        margin-right: 1%;
+        border-radius: 4%;
+        padding: 5%;
+        background-color: rgb(22, 22, 51);
+        color: white;
+    }
+    .login-inp a:hover{
+        background-color: white;
+        color: rgb(22, 22, 51);
+    }
+
+    .profile{
+        padding: 2%;
+        box-shadow: 5px 5px 50px rgb(4, 4, 61);
+        border-radius: 1%;
+    }
+</style>
+
 {% if user.is_authenticated %}
 <div class="container mt-5">
 
+    <div class="profile mb-5">
     <div class="row mb-2">
         <div class="col">
             <h3>Username: @{{user.get_username}}</h3>
+        </div>
+        <div class="col-2">
+            <div class="login-inp">
+                <a href="{% url 'edit-user' user.id %}" id="edit-btn">Edit</a>
+            </div>
         </div>
     </div>
 
@@ -19,7 +51,7 @@
         </div>
     </div>
 
-    <div class="row mb-5">
+    <div class="row">
         <div class="col">
             <h4>Joined: {{user.date_joined}}</h4>
         </div>
@@ -27,11 +59,52 @@
             <h4>Last Login: {{user.last_login|timesince}} ago</h4>
         </div>
     </div>
+    </div>
 
-    {% if request.user.is_staff %}
-    {% include 'coursecontent.html' %}
+    {% if request.user.is_staff or request.user.is_superuser %}
+    {% if not request.user.is_superuser %}
+    <div class="container-dash">
+        <div class="followers">
+            <h2>Followers</h2>
+            {% for item in followers %}
+            <h4 class="mt-3">{{item}}</h4>
+            {% endfor %}
+        </div>
+        {% include 'coursecontent.html' %}
+    </div>
     {% else %}
-    
+        {% include 'coursecontent.html' %}
+    {% endif %}
+    {% else %}
+    <div class="container-dash">
+        <div class="following">
+            <h2 class="pb-2">Following</h2>
+            {% for item in followList %}
+            <h4 class="mt-3">{{item}}</h4>
+            {% endfor %}
+        </div>
+
+        <div class="applied-course mx-3">
+        <h2 class="pb-2">Applied Courses</h2>
+        {% for item in appliedCourse %}
+            <div class="row mt-3">
+                <div class="col">
+                    <h4>{{item.course_id}}</h4>
+                </div>
+
+                {% if item.accepted == True %}
+                <div class="col">
+                    <h4>Accepted</h4>
+                </div>
+                {% else %}
+                <div class="col">
+                    <h4>Approval Pending</h4>
+                </div>
+                {% endif %}
+            </div>
+        {% endfor %}
+        </div>
+    </div>
     {% endif %}
 </div>
 {% endif %}

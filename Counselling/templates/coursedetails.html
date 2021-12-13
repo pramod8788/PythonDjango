@@ -19,6 +19,12 @@
         background-color: white;
         color: rgb(22, 22, 51);
     }
+    .dashboard input[type=checkbox]{
+        margin-left: 5%;
+        margin-right: 5%;
+        width: 20px;
+        height: 16px;
+    }
 </style>
 
 <div class="container-dash mt-5 mx-5">
@@ -50,45 +56,65 @@
                 <h6>{{data.course_description}}</h6>
             </div>
         </div>
+
         <div class="row">
             <div class="col">
-                <h5>Applied By: Students</h5>
+                <h5>Students Applied: {{applycount}}</h5>
             </div>
-            {% if request.user.is_authenticated %}
-            {% if not request.user.is_staff or not request.user.is_superuser%}
-            <div class="col-2">
-                <form action="{% url 'apply-course' %}" method="post">  
-                {% csrf_token %}            
-                {% if appliedcourse.course_id == data %}
-                <div class="login-inp">
-                    <input type="hidden" name="course" value="{{ course.id }}" readonly>
-                    <input type="hidden" name="value" value="unfollow" readonly>
-                    <input type="submit" value="Applied">
-                </div>
 
-                {% else %}
+            {% if not request.user.is_staff and not request.user.is_superuser %}
+            <div class="col-2">
+                {% if appliedcourses != None %}
                 <div class="login-inp">
-                    <input type="hidden" name="course" value="{{ course.id }}" readonly>
-                    <input type="hidden" name="value" value="follow" readonly>
-                    <input type="submit" value="Apply">
+                    <input type="button" value="Applied" readonly>
                 </div>
-                {% endif %}
-            </form>
-            </div>
-            {% else %}
-            <div class="col-2"> 
-                <form action="{% url 'apply-course' %}" method="post"> 
-                {% csrf_token %}             
+                {% else %}
+                <form action="{% url 'apply-course' %}" method="POST">  
+                {% csrf_token %} 
                 <div class="login-inp">
-                    <input type="hidden" name="course" value="{{ course.id }}" readonly>
-                    <input type="hidden" name="value" value="follow" readonly>
+                    <input type="hidden" name="course" value="{{data}}" readonly>
+                    <input type="hidden" name="value" value="apply" readonly>
                     <input type="submit" value="Apply">
                 </div>
                 </form>
+                {% endif %}
+            </div>
+            {% elif request.user == data.user or request.user.is_superuser %}
+            <div class="col-2">
+                <div class="login-inp">
+                    <a href="{% url 'edit-course' data.id %}" id="edit-btn">Edit</a>
+                </div>
             </div>
             {% endif %}
-            {% endif %}
         </div>
+
+        {% if request.user == data.user or request.user.is_superuser %}
+        <h2 class="mt-5">Students Applied</h2>
+        {% endif %}
+        {% for appliedcourse in appliedcourses1 %}
+        {% if request.user == appliedcourse.course_id.user or request.user.is_superuser %}
+            <div class="row pt-4">
+                <div class="col">
+                    <h5>{{appliedcourse.user}}</h5>
+                </div>
+                <div class="col">
+                    <h5>Accepted: 
+                        {% if appliedcourse.accepted == True %}
+                        Yes
+                        {% else %}
+                        No
+                        {% endif %}
+                    </h5>    
+                </div>
+                <div class="col">
+                    <div class="login-inp">
+                        <a href="{% url 'accept-course' appliedcourse.id %}">Edit</a>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+            {% endfor %}
     </div>
 </div>
+
 {% endblock content %}

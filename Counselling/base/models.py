@@ -22,7 +22,18 @@ class follower(models.Model):
     student = models.CharField(max_length=150)
     status = models.BooleanField(default=True)
 
+    def __str__(self):
+        val = f"{self.student} following {self.mentor}"
+        return str(val)
+
 class applyforcourse(models.Model):
     user = models.ForeignKey(User, on_delete=SET_NULL, null=True)
     course_id = models.ForeignKey(course, on_delete=SET_NULL, null=True)
+    status = models.BooleanField(default=False)
     accepted = models.BooleanField(default=False)
+
+    def __str__(self):
+        val = f"{self.user} applied for {self.course_id}"
+        return str(val)
+
+# class message(models.Model):

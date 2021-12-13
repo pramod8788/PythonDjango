@@ -7,6 +7,12 @@
     .manage a:hover{
         color: aqua;
     }
+
+    .manage{
+        max-height: 95vh;
+        padding: 5%;
+        box-shadow: 5px 5px 50px black;
+    }
 </style>
 {% if request.user.is_superuser or request.user.is_staff %}
 
@@ -15,7 +21,7 @@
         {% if request.user.is_superuser %}
             <h3>Manage Courses ({{courses.count}})</h3>
         {% else %}
-            <h3>Manage Courses</h3>
+            <h3>All Courses</h3>
         {% endif %}
         </a>
         {% for course in courses|slice:":4" %}
