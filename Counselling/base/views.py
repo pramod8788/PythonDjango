@@ -51,7 +51,7 @@ def signupPage(request):
     forms = UserCreationForm()
     if request.method == 'POST':
         form = UserCreationForm(request.POST)
-        if form.is_valid:
+        if form.is_valid():
             user = form.save(commit=False)
             user.username = user.username.lower()
             user.save()
@@ -62,7 +62,7 @@ def signupPage(request):
             else:
                 return redirect('home')
         else:
-            messages.error(request, "An error occurred")
+            messages.error(request, "An error occurred! User not Created.")
     context = {"forms":forms,}
     return render(request, 'signup.html', context)
 
@@ -75,7 +75,7 @@ def createCourse(request):
     forms = courseForm()
     if request.method == 'POST':
         form = courseForm(request.POST)
-        if form.is_valid:
+        if form.is_valid():
             courses = form.save(commit=False)
             courses.user = request.user
             courses.save()
@@ -114,7 +114,7 @@ def editCourse(request, pk):
 
     if request.method == 'POST':
         form = courseFormEdit(request.POST, instance=data)
-        if form.is_valid:
+        if form.is_valid():
             form.save()
             return redirect('home')
     context = {"forms":forms, "data":data}
@@ -278,10 +278,19 @@ def editUser(request, pk):
     forms = userFormEdit(instance=data)
 
     if request.method == 'POST':
+        is_staff = request.POST.get('is_staff')
+        mentorToken = request.POST.get('mentor-token')
+
         form = userFormEdit(request.POST, instance=data)
-        if form.is_valid:
-            form.save()
-            return redirect('home')
+        if form.is_valid():
+            val = form.save(commit=False)
+            if is_staff is not None:
+                if mentorToken == 'jsdjkvjhkjnkjdndsv':
+                    val.save()
+                    return redirect('home')
+                else:
+                    messages.error(request,"Invalid Mentor Token")
+
     context = {"forms":forms, "data":data}
     return render(request, 'signup.html', context)
 

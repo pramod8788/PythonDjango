@@ -64,6 +64,14 @@
             {{form}}
         </div>
         {% endfor %}
+
+
+        {% if '/edit-user/' in request.path %}
+        <div class="col-6 mb-4 pt-2">
+            <label class="form-label">Mentor Token:</label> <br>
+            <input type="text" name="mentor-token">
+        </div>
+        {% endif %}
         </div>
 
         <div class="login-inp">
