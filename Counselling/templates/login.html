@@ -28,16 +28,16 @@
             </div>
 
             <hr>
-            <div class="social">
-                <h3 class="text-center mb-4">Or Login with</h3>
-                <a href="{% provider_login_url 'facebook' method='oauth2' %}" class="text-decoration-none mx-5">
-                    <img src="{% static 'FacebookLogo.png' %}" width="auto" height="70">
+            <div class="social text-center">
+                <h3 class="mb-4">Or Login with</h3>
+                <a href="{% provider_login_url 'facebook' method='oauth2' %}" class="text-decoration-none mx-3">
+                    <img src="{% static 'FacebookLogo.png' %}" width="auto" height="60">
                 </a>
-                <a href="{% provider_login_url 'google' %}" class="text-decoration-none mx-5">
-                    <img src="{% static 'GoogleLogo.png' %}" width="auto" height="70">
+                <a href="{% provider_login_url 'google' %}" class="text-decoration-none mx-3">
+                    <img src="{% static 'GoogleLogo.png' %}" width="auto" height="60">
                 </a>
-                <a href="{% provider_login_url 'github' %}" class="text-decoration-none mx-5">
-                    <img src="{% static 'GitLogo.png' %}" width="auto" height="70">
+                <a href="{% provider_login_url 'github' %}" class="text-decoration-none mx-3">
+                    <img src="{% static 'GitLogo.png' %}" width="auto" height="60">
                 </a>
             </div>
         </form>

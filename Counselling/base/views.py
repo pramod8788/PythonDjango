@@ -25,6 +25,7 @@ def home(request):
     context = {"courses":courses, "mentors":mentors, "students":students,}
     return render(request, 'home.html', context)
 
+
 def loginPage(request):
     if request.user.is_authenticated:
         return redirect('home')
@@ -47,6 +48,7 @@ def loginPage(request):
 
     return render(request, 'login.html')
 
+
 def signupPage(request):
     forms = UserCreationForm()
     if request.method == 'POST':
@@ -66,9 +68,11 @@ def signupPage(request):
     context = {"forms":forms,}
     return render(request, 'signup.html', context)
 
+
 def logoutPage(request):
     logout(request)
     return redirect('home')
+
 
 @login_required(login_url='login')
 def createCourse(request):
@@ -82,6 +86,7 @@ def createCourse(request):
             return redirect('home')
     context = {"forms":forms,}
     return render(request, 'createcourse.html', context)
+
 
 def courseDetails(request):
     courses = course.objects.all()
@@ -120,6 +125,7 @@ def editCourse(request, pk):
     context = {"forms":forms, "data":data}
     return render(request, 'createcourse.html', context)
 
+
 @login_required(login_url='login')
 def applyCourse(request):
     if request.method == 'POST':
@@ -133,6 +139,7 @@ def applyCourse(request):
             return redirect('course')
         else:
             return HttpResponse("Error")
+
 
 def viewCourse(request,pk):
     courses = course.objects.all()
@@ -178,6 +185,7 @@ def viewCourse(request,pk):
 
     return render(request, 'coursedetails.html', context)
 
+
 def acceptCourse(request,pk):
     data = applyforcourse.objects.get(id=pk)
     forms = applyForm(instance=data)
@@ -191,6 +199,7 @@ def acceptCourse(request,pk):
     context = {"forms":forms, "data":data}
     return render(request, "coursepermission.html", context)
     
+
 @login_required(login_url='login')
 def profile(request):
     user = request.user
@@ -231,6 +240,7 @@ def profile(request):
         
     return render(request, 'profile.html', context)
 
+
 def students(request):
     courses = course.objects.all()
     mentors = User.objects.filter(groups=1)
@@ -246,6 +256,7 @@ def students(request):
 
     context = {"courses":courses, "mentors":mentors, "students":students,}
     return render(request, 'students.html', context)
+
 
 def mentors(request):
     courses = course.objects.all()
@@ -272,6 +283,7 @@ def mentors(request):
 
     return render(request, 'mentors.html', context) 
 
+
 @login_required(login_url='login')
 def editUser(request, pk):
     data = User.objects.get(id=pk)
@@ -294,6 +306,7 @@ def editUser(request, pk):
     context = {"forms":forms, "data":data}
     return render(request, 'signup.html', context)
 
+
 @login_required(login_url='login')
 def follow(request):
     if request.method == 'POST':
@@ -311,3 +324,46 @@ def follow(request):
             follow = follower.objects.get(mentor=ment, student=student)
             follow.delete()
             return redirect('mentors')             
+
+
+def viewProfile(request, pk):
+    user = User.objects.get(id=pk)
+    if user.is_superuser:
+        courses = course.objects.all()
+    else:
+        courses = course.objects.filter(user=user)
+
+    mentors = User.objects.filter(is_staff=True)
+    if user.is_superuser:
+        students = User.objects.filter(groups=2)
+    else:
+        followers = follower.objects.filter(mentor=user)
+        students = []
+        for i in followers:
+            stu = User.objects.get(username=i.student)
+            students.append(stu)
+
+    applied_course = applyforcourse.objects.filter(user=user)
+
+    following = follower.objects.filter(student=user)
+    ment = []
+    for i in following:
+        ment.append(i.mentor)
+
+    followers = follower.objects.filter(mentor=user)
+    stu = []
+    for i in followers:
+        stu.append(i.student)
+
+    context = {
+        "user":user,
+        "courses":courses, 
+        "mentors":mentors, 
+        "students":students,
+        "appliedCourse":applied_course,
+        "followList":ment,
+        "followers":stu,
+    }
+        
+    return render(request, 'profile.html', context)
+

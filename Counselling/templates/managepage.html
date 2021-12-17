@@ -9,9 +9,10 @@
     }
 
     .manage{
-        max-height: 95vh;
+        max-height: 650px;
         padding: 5%;
         box-shadow: 5px 5px 50px black;
+        margin-bottom: 2%;
     }
 </style>
 {% if request.user.is_superuser or request.user.is_staff %}
@@ -28,7 +29,9 @@
         {% if request.user == course.user or request.user.is_superuser %}
 
         {% if course.course_isactive == True %}
+        <a href="{% url 'view-course' course.id %}">
         <h5>{{course.course_name}}</h5>
+        </a>
         {% endif %}
 
         {% endif %}
@@ -42,7 +45,9 @@
         <h3>Manage Mentors ({{mentors.count}})</h3>
         </a>
         {% for mentor in mentors|slice:":4" %}
+        <a href="{% url 'view-profile' mentor.id %}">
         <h5>{{mentor.username}}</h5>
+        </a>
         {% endfor %}
         {% endif %}
 
@@ -55,7 +60,9 @@
         {% endif %}
         </a>
         {% for student in students|slice:":4" %}
+        <a href="{% url 'view-profile' student.id %}">
         <h5>{{student.username}}</h5>
+        </a>
         {% endfor %}
     </div>
 
@@ -65,9 +72,11 @@
             <h3>View all Courses</h3>
         </a>
         
-        {% for course in courses|slice:":10" %}
+        {% for course in courses|slice:":15" %}
         {% if course.course_isactive == True %}
+        <a href="{% url 'view-course' course.id %}">
         <h5>{{course.course_name}}</h5>
+        </a>
         {% endif %}
         {% endfor %}
     </div>

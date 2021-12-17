@@ -36,4 +36,13 @@ class applyforcourse(models.Model):
         val = f"{self.user} applied for {self.course_id}"
         return str(val)
 
-# class message(models.Model):
+class message(models.Model):
+    sender = models.CharField(max_length=100)
+    receiver = models.CharField(max_length=100)
+    message_body = models.CharField(max_length=1000)
+    message_created = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        val = f"{self.sender} messaged {self.receiver}"
+        return str(val)
+
