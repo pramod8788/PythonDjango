@@ -127,6 +127,12 @@
                 {% endif %}
             </div>
 
+            <div class="col-2">
+                <div class="login-inp">
+                    <a href="{% url 'view-message' user.id %}" id="edit-btn">Message</a>
+                </div>
+            </div>
+
             {% if request.user == user or request.user.is_superuser %}
             <div class="col-2">
                 <div class="login-inp">

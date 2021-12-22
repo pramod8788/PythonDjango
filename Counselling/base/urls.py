@@ -21,4 +21,7 @@ urlpatterns = [
     path('mentors/', views.mentors, name='mentors'),
     path('edit-user/<str:pk>/', views.editUser, name='edit-user'),
     path('follow-user/', views.follow, name='follow-user'),
+
+    path('view-message/<str:pk>/', views.viewMessage, name='view-message'),
+    path('message-list/', views.messageList, name='message-list'),
 ]

@@ -51,12 +51,19 @@
                 <a class="nav-link" href="{% url 'login' %}">Login</a>
             {% endif%}
             </li>
+            
+            {% if not request.user.is_superuser %}
+            <li class="nav-item mx-1">
+                <a class="nav-link" href="{% url 'message-list' %}">Messages</a>
+            </li>
+            {% endif %}
 
             {% if request.user.is_authenticated %}
             <li class="nav-item mx-1">
-            <a class="nav-link">Hello! {{request.user.first_name}}</a>
+                <a class="nav-link">Hello! {{request.user.first_name}}</a>
             </li>
             {% endif %}
+
         </ul>
         <form class="d-flex">
             <input class="form-control me-2" type="text" name="q" placeholder="Search" aria-label="Search">

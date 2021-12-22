@@ -57,12 +57,21 @@
                 <h5>Inactive</h5>
                 {% endif %}
             </div>
-
+            
+            {% if request.user.is_staff or request.user.is_superuser %}
             <div class="col-2">
                 <div class="login-inp">
                     <a href="{% url 'edit-user' user.id %}" id="edit-btn">Edit</a>
                 </div>
             </div>
+
+            {% else %}
+            <div class="col-2">
+                <div class="login-inp">
+                    <a href="{% url 'view-message' user.id %}" id="edit-btn">Message</a>
+                </div>
+            </div>
+            {% endif %}
         </div>
         
         <div class="row mb-2">

@@ -6,7 +6,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.http import HttpResponse
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from . models import course, follower, applyforcourse
+from . models import course, follower, applyforcourse, message, chatroom
 from . forms import courseForm, courseFormEdit, userFormEdit, applyForm
 
 def home(request):
@@ -243,10 +243,10 @@ def profile(request):
 
 def students(request):
     courses = course.objects.all()
-    mentors = User.objects.filter(groups=1)
+    mentors = User.objects.filter(is_staff=True, is_superuser=False)
     user = request.user
     if user.is_superuser:
-        students = User.objects.filter(groups=2)
+        students = User.objects.filter(is_superuser=False, is_staff=False)
     else:
         followers = follower.objects.filter(mentor=user)
         students = []
@@ -261,7 +261,15 @@ def students(request):
 def mentors(request):
     courses = course.objects.all()
     mentors = User.objects.filter(is_staff=True, is_superuser=False)
-    students = User.objects.filter(groups=2)
+    user = request.user
+    if user.is_superuser:
+        students = User.objects.filter(is_superuser=False, is_staff=False)
+    else:
+        followers = follower.objects.filter(mentor=user)
+        students = []
+        for i in followers:
+            stu = User.objects.get(username=i.student)
+            students.append(stu)
     try:
         followers = follower.objects.filter(student=request.user)
         ment = []
@@ -367,3 +375,100 @@ def viewProfile(request, pk):
         
     return render(request, 'profile.html', context)
 
+def viewMessage(request, pk):
+    sender = request.user
+    receiver = User.objects.get(id=pk)
+    chatrooms = chatroom.objects.all()
+
+    check = 0
+    room = ''
+    for item in chatrooms:
+        if((item.sender == sender.username and item.receiver == receiver.username) or (item.sender == receiver.username and item.receiver == sender.username)):
+            check += 1
+            room = item
+            break
+        else:
+            continue
+
+    if check == 0:
+        chatroom.objects.create(sender=sender.username, receiver=receiver.username)
+
+    courses = course.objects.all()
+    mentors = User.objects.filter(groups=1)
+    user = request.user
+    if user.is_superuser:
+        students = User.objects.filter(groups=2)
+    else:
+        followers = follower.objects.filter(mentor=user)
+        students = []
+        for i in followers:
+            stu = User.objects.get(username=i.student)
+            students.append(stu)
+    
+    try:
+        chats = message.objects.filter(chatroom=room)
+        context = {
+            "courses":courses, 
+            "mentors":mentors, 
+            "students":students,
+            'chats':chats,
+            "receiver":receiver,
+        }
+    except:
+        context = {
+            "courses":courses, 
+            "mentors":mentors, 
+            "students":students,
+            "receiver":receiver,
+        }
+
+    if request.method == 'POST':
+        msg = request.POST.get('chat')
+        try:
+            message.objects.create(
+                chatroom = room,
+                user = sender.username,
+                message_body = msg
+            )
+        except:
+            messages.error(request, "Error! Cannot send the message")
+
+    return render(request, 'messages.html', context)
+
+def messageList(request):
+    user = request.user
+    room = chatroom.objects.filter(Q(sender=user) | Q(receiver=user))
+    chatUser = []
+
+    for item in room:
+        if item.sender != user.username:
+            chatUser.append(item.sender)
+        elif item.receiver != user.username:
+            chatUser.append(item.receiver)
+        else:
+            continue
+    
+    chatUsers = []
+    for item in chatUser:
+        obj = User.objects.get(username=item)
+        chatUsers.append(obj)
+
+    courses = course.objects.all()
+    mentors = User.objects.filter(groups=1)
+    user = request.user
+    if user.is_superuser:
+        students = User.objects.filter(groups=2)
+    else:
+        followers = follower.objects.filter(mentor=user)
+        students = []
+        for i in followers:
+            stu = User.objects.get(username=i.student)
+            students.append(stu)
+
+    context = {
+            "courses":courses, 
+            "mentors":mentors, 
+            "students":students,
+            "chatUsers":chatUsers,
+        }
+    return render(request, 'messagelist.html', context)

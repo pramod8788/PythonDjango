@@ -1,0 +1,43 @@
+{% extends 'main.html' %}
+
+{% block content %}
+{% load static %}
+<style>
+    img{
+        border-radius: 40%;
+    }
+
+    a{
+        color: white;
+    }
+
+
+    a:hover{
+        color: aqua;
+    }
+</style>
+
+<div class="container-dash mt-5 mx-5">
+    {% include 'managepage.html' %}
+    <div class="dashboard mx-5">
+        <h4 class="text-center mb-5">Messages</h4>
+
+        {% for user in chatUsers %}
+        <div class="row">
+            <div class="col mb-2">
+            <a href="{% url 'view-message' user.id %}" class="text-decoration-none">
+                <h4>
+                <img src="{% static 'CharacterAvatar.png' %}" class="mx-5" height="25" width="auto">
+                {{user.first_name}}
+                </h4>
+            </a>
+            </div>
+            <div class="col">
+                <h4>Messaged You</h4>
+            </div>
+        </div>
+        {% endfor %}
+
+    </div>
+</div>
+{% endblock content %}
