@@ -6,11 +6,12 @@ from django.contrib.auth import authenticate, login, logout
 from django.http import HttpResponse
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from . models import course, follower, applyforcourse, message, chatroom
-from . forms import courseForm, courseFormEdit, userFormEdit, applyForm
+from .models import course, follower, applyforcourse, message, chatroom
+from .forms import courseForm, courseFormEdit, userFormEdit, applyForm
+
 
 def home(request):
-    q = request.GET.get('q') if request.GET.get('q') != None else ''
+    q = request.GET.get("q") if request.GET.get("q") != None else ""
     courses = course.objects.all()
     mentors = User.objects.filter(groups=1)
     user = request.user
@@ -22,36 +23,42 @@ def home(request):
         for i in followers:
             stu = User.objects.get(username=i.student)
             students.append(stu)
-    context = {"courses":courses, "mentors":mentors, "students":students,}
-    return render(request, 'home.html', context)
+    context = {
+        "courses": courses,
+        "mentors": mentors,
+        "students": students,
+    }
+    return render(request, "home.html", context)
 
 
 def loginPage(request):
     if request.user.is_authenticated:
-        return redirect('home')
+        return redirect("home")
 
-    if request.method == 'POST':
-        username = request.POST.get('username').lower()
-        password = request.POST.get('password')
-        
+    if request.method == "POST":
+        username = request.POST.get("username").lower()
+        password = request.POST.get("password")
+
         try:
             user = User.objects.get(username=username)
-            user = authenticate(request, username=username, password=password, is_active=True)
+            user = authenticate(
+                request, username=username, password=password, is_active=True
+            )
 
             if user is not None:
                 login(request, user)
-                return redirect('home')
+                return redirect("home")
             else:
-                messages.error(request, 'Username or Password does not match...')
+                messages.error(request, "Username or Password does not match...")
         except:
-            messages.error(request, 'User Not Found....')
+            messages.error(request, "User Not Found....")
 
-    return render(request, 'login.html')
+    return render(request, "login.html")
 
 
 def signupPage(request):
     forms = UserCreationForm()
-    if request.method == 'POST':
+    if request.method == "POST":
         form = UserCreationForm(request.POST)
         if form.is_valid():
             user = form.save(commit=False)
@@ -60,32 +67,36 @@ def signupPage(request):
             login(request, user)
 
             if request.user.is_authenticated:
-                return redirect('edit-user', pk=user.id)
+                return redirect("edit-user", pk=user.id)
             else:
-                return redirect('home')
+                return redirect("home")
         else:
             messages.error(request, "An error occurred! User not Created.")
-    context = {"forms":forms,}
-    return render(request, 'signup.html', context)
+    context = {
+        "forms": forms,
+    }
+    return render(request, "signup.html", context)
 
 
 def logoutPage(request):
     logout(request)
-    return redirect('home')
+    return redirect("home")
 
 
-@login_required(login_url='login')
+@login_required(login_url="login")
 def createCourse(request):
     forms = courseForm()
-    if request.method == 'POST':
+    if request.method == "POST":
         form = courseForm(request.POST)
         if form.is_valid():
             courses = form.save(commit=False)
             courses.user = request.user
             courses.save()
-            return redirect('home')
-    context = {"forms":forms,}
-    return render(request, 'createcourse.html', context)
+            return redirect("home")
+    context = {
+        "forms": forms,
+    }
+    return render(request, "createcourse.html", context)
 
 
 def courseDetails(request):
@@ -100,48 +111,50 @@ def courseDetails(request):
         for i in followers:
             stu = User.objects.get(username=i.student)
             students.append(stu)
-    
+
     applied_course = applyforcourse.objects.all()
 
     context = {
-        "courses":courses, 
-        "mentors":mentors, 
-        "students":students,
-        "appliedcourse":applied_course,
+        "courses": courses,
+        "mentors": mentors,
+        "students": students,
+        "appliedcourse": applied_course,
     }
-    return render(request, 'course.html', context)
+    return render(request, "course.html", context)
 
 
-@login_required(login_url='login')
+@login_required(login_url="login")
 def editCourse(request, pk):
     data = course.objects.get(id=pk)
     forms = courseFormEdit(instance=data)
 
-    if request.method == 'POST':
+    if request.method == "POST":
         form = courseFormEdit(request.POST, instance=data)
         if form.is_valid():
             form.save()
-            return redirect('home')
-    context = {"forms":forms, "data":data}
-    return render(request, 'createcourse.html', context)
+            return redirect("home")
+    context = {"forms": forms, "data": data}
+    return render(request, "createcourse.html", context)
 
 
-@login_required(login_url='login')
+@login_required(login_url="login")
 def applyCourse(request):
-    if request.method == 'POST':
-        user = request.user       
-        course_id = request.POST.get('course')
+    if request.method == "POST":
+        user = request.user
+        course_id = request.POST.get("course")
         cor = course.objects.get(course_name=course_id)
-        value = request.POST['value']
+        value = request.POST["value"]
         if value == "apply":
-            follow = applyforcourse.objects.create(user=user, course_id=cor, status=True)
+            follow = applyforcourse.objects.create(
+                user=user, course_id=cor, status=True
+            )
             follow.save()
-            return redirect('course')
+            return redirect("course")
         else:
             return HttpResponse("Error")
 
 
-def viewCourse(request,pk):
+def viewCourse(request, pk):
     courses = course.objects.all()
     mentors = User.objects.filter(groups=1)
     user = request.user
@@ -153,54 +166,54 @@ def viewCourse(request,pk):
         for i in followers:
             stu = User.objects.get(username=i.student)
             students.append(stu)
-    
+
     data = course.objects.get(id=pk)
     applied_count = applyforcourse.objects.filter(course_id=data)
     applied_course1 = applyforcourse.objects.filter(course_id=data)
     print(applied_course1)
 
     count = 0
-    if len(applied_count) > 0 :
+    if len(applied_count) > 0:
         count = len(applied_count)
     try:
         applied_course = applyforcourse.objects.get(course_id=data, user=request.user)
         context = {
-            "courses":courses, 
-            "mentors":mentors, 
-            "students":students,
-            "data":data,
-            "applycount":count,
-            "appliedcourses":applied_course,
-            "appliedcourses1":applied_course1,
+            "courses": courses,
+            "mentors": mentors,
+            "students": students,
+            "data": data,
+            "applycount": count,
+            "appliedcourses": applied_course,
+            "appliedcourses1": applied_course1,
         }
     except:
         context = {
-            "courses":courses, 
-            "mentors":mentors, 
-            "students":students,
-            "data":data,
-            "applycount":count,
-            "appliedcourses1":applied_course1,
+            "courses": courses,
+            "mentors": mentors,
+            "students": students,
+            "data": data,
+            "applycount": count,
+            "appliedcourses1": applied_course1,
         }
 
-    return render(request, 'coursedetails.html', context)
+    return render(request, "coursedetails.html", context)
 
 
-def acceptCourse(request,pk):
+def acceptCourse(request, pk):
     data = applyforcourse.objects.get(id=pk)
     forms = applyForm(instance=data)
 
-    if request.method == 'POST':
+    if request.method == "POST":
         form = applyForm(request.POST, instance=data)
         if form.is_valid:
             form.save()
-            return redirect('home')
+            return redirect("home")
 
-    context = {"forms":forms, "data":data}
+    context = {"forms": forms, "data": data}
     return render(request, "coursepermission.html", context)
-    
 
-@login_required(login_url='login')
+
+@login_required(login_url="login")
 def profile(request):
     user = request.user
     if user.is_superuser:
@@ -216,7 +229,7 @@ def profile(request):
         for i in followers:
             stu = User.objects.get(username=i.student)
             students.append(stu)
-    
+
     applied_course = applyforcourse.objects.filter(user=user)
 
     following = follower.objects.filter(student=user)
@@ -230,15 +243,15 @@ def profile(request):
         stu.append(i.student)
 
     context = {
-        "courses":courses, 
-        "mentors":mentors, 
-        "students":students,
-        "appliedCourse":applied_course,
-        "followList":ment,
-        "followers":stu,
+        "courses": courses,
+        "mentors": mentors,
+        "students": students,
+        "appliedCourse": applied_course,
+        "followList": ment,
+        "followers": stu,
     }
-        
-    return render(request, 'profile.html', context)
+
+    return render(request, "profile.html", context)
 
 
 def students(request):
@@ -254,8 +267,12 @@ def students(request):
             stu = User.objects.get(username=i.student)
             students.append(stu)
 
-    context = {"courses":courses, "mentors":mentors, "students":students,}
-    return render(request, 'students.html', context)
+    context = {
+        "courses": courses,
+        "mentors": mentors,
+        "students": students,
+    }
+    return render(request, "students.html", context)
 
 
 def mentors(request):
@@ -276,62 +293,62 @@ def mentors(request):
         for i in followers:
             ment.append(i.mentor)
         context = {
-            "courses":courses, 
-            "mentors":mentors, 
-            "students":students, 
-            "followers":followers,
-            "ment":ment,
+            "courses": courses,
+            "mentors": mentors,
+            "students": students,
+            "followers": followers,
+            "ment": ment,
         }
     except:
         context = {
-            "courses":courses, 
-            "mentors":mentors, 
-            "students":students,
+            "courses": courses,
+            "mentors": mentors,
+            "students": students,
         }
 
-    return render(request, 'mentors.html', context) 
+    return render(request, "mentors.html", context)
 
 
-@login_required(login_url='login')
+@login_required(login_url="login")
 def editUser(request, pk):
     data = User.objects.get(id=pk)
     forms = userFormEdit(instance=data)
 
-    if request.method == 'POST':
-        is_staff = request.POST.get('is_staff')
-        mentorToken = request.POST.get('mentor-token')
+    if request.method == "POST":
+        is_staff = request.POST.get("is_staff")
+        mentorToken = request.POST.get("mentor-token")
 
         form = userFormEdit(request.POST, instance=data)
         if form.is_valid():
             val = form.save(commit=False)
             if is_staff is not None:
-                if mentorToken == 'jsdjkvjhkjnkjdndsv':
+                if mentorToken == "jsdjkvjhkjnkjdndsv":
                     val.save()
-                    return redirect('home')
+                    return redirect("home")
                 else:
-                    messages.error(request,"Invalid Mentor Token")
+                    messages.error(request, "Invalid Mentor Token")
 
-    context = {"forms":forms, "data":data}
-    return render(request, 'signup.html', context)
+    context = {"forms": forms, "data": data}
+    return render(request, "signup.html", context)
 
 
-@login_required(login_url='login')
+@login_required(login_url="login")
 def follow(request):
-    if request.method == 'POST':
-        student = request.user       
-        mentors = request.POST.get('mentor')
+    if request.method == "POST":
+        student = request.user
+        mentors = request.POST.get("mentor")
         ment = User.objects.get(username=mentors)
-        value = request.POST['value']
+        value = request.POST["value"]
         if value == "follow":
             follow = follower.objects.create(mentor=ment, student=student)
             try:
                 follow.save()
             except:
-                return redirect('mentors')
+                return redirect("mentors")
         else:
             follow = follower.objects.get(mentor=ment, student=student)
             follow.delete()
-            return redirect('mentors')             
+            return redirect("mentors")
 
 
 def viewProfile(request, pk):
@@ -364,16 +381,17 @@ def viewProfile(request, pk):
         stu.append(i.student)
 
     context = {
-        "user":user,
-        "courses":courses, 
-        "mentors":mentors, 
-        "students":students,
-        "appliedCourse":applied_course,
-        "followList":ment,
-        "followers":stu,
+        "user": user,
+        "courses": courses,
+        "mentors": mentors,
+        "students": students,
+        "appliedCourse": applied_course,
+        "followList": ment,
+        "followers": stu,
     }
-        
-    return render(request, 'profile.html', context)
+
+    return render(request, "profile.html", context)
+
 
 def viewMessage(request, pk):
     sender = request.user
@@ -381,9 +399,11 @@ def viewMessage(request, pk):
     chatrooms = chatroom.objects.all()
 
     check = 0
-    room = ''
+    room = ""
     for item in chatrooms:
-        if((item.sender == sender.username and item.receiver == receiver.username) or (item.sender == receiver.username and item.receiver == sender.username)):
+        if (item.sender == sender.username and item.receiver == receiver.username) or (
+            item.sender == receiver.username and item.receiver == sender.username
+        ):
             check += 1
             room = item
             break
@@ -404,36 +424,35 @@ def viewMessage(request, pk):
         for i in followers:
             stu = User.objects.get(username=i.student)
             students.append(stu)
-    
+
     try:
         chats = message.objects.filter(chatroom=room)
         context = {
-            "courses":courses, 
-            "mentors":mentors, 
-            "students":students,
-            'chats':chats,
-            "receiver":receiver,
+            "courses": courses,
+            "mentors": mentors,
+            "students": students,
+            "chats": chats,
+            "receiver": receiver,
         }
     except:
         context = {
-            "courses":courses, 
-            "mentors":mentors, 
-            "students":students,
-            "receiver":receiver,
+            "courses": courses,
+            "mentors": mentors,
+            "students": students,
+            "receiver": receiver,
         }
 
-    if request.method == 'POST':
-        msg = request.POST.get('chat')
+    if request.method == "POST":
+        msg = request.POST.get("chat")
         try:
             message.objects.create(
-                chatroom = room,
-                user = sender.username,
-                message_body = msg
+                chatroom=room, user=sender.username, message_body=msg
             )
         except:
             messages.error(request, "Error! Cannot send the message")
 
-    return render(request, 'messages.html', context)
+    return render(request, "messages.html", context)
+
 
 def messageList(request):
     user = request.user
@@ -447,7 +466,7 @@ def messageList(request):
             chatUser.append(item.receiver)
         else:
             continue
-    
+
     chatUsers = []
     for item in chatUser:
         obj = User.objects.get(username=item)
@@ -466,9 +485,9 @@ def messageList(request):
             students.append(stu)
 
     context = {
-            "courses":courses, 
-            "mentors":mentors, 
-            "students":students,
-            "chatUsers":chatUsers,
-        }
-    return render(request, 'messagelist.html', context)
+        "courses": courses,
+        "mentors": mentors,
+        "students": students,
+        "chatUsers": chatUsers,
+    }
+    return render(request, "messagelist.html", context)

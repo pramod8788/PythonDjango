@@ -2,7 +2,7 @@
 
 {% block content %}
 <style>
-    .login-inp a{
+    .login-inp a {
         text-decoration: none;
         padding: 5%;
         margin-top: 2%;
@@ -15,11 +15,13 @@
         background-color: rgb(22, 22, 51);
         color: white;
     }
-    .login-inp a:hover{
+
+    .login-inp a:hover {
         background-color: white;
         color: rgb(22, 22, 51);
     }
-    .dashboard input[type=checkbox]{
+
+    .dashboard input[type=checkbox] {
         margin-left: 5%;
         margin-right: 5%;
         width: 20px;
@@ -27,10 +29,10 @@
     }
 </style>
 
-    <div class="dashboard mt-5 mx-5">
-        <h1>Give Permission to user for the course</h1>
-        <form method="POST">
-            {% csrf_token %}
+<div class="dashboard mt-5 mx-5">
+    <h1>Give Permission to user for the course</h1>
+    <form method="POST">
+        {% csrf_token %}
         <div class="row">
             {% for form in forms %}
             <div class="col-1 mb-4 pt-2">
@@ -46,6 +48,6 @@
             <input type="submit" name="create-course" value="Update">
         </div>
     </form>
-    </div>
+</div>
 
 {% endblock content %}
