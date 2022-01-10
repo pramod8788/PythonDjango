@@ -1,0 +1,11 @@
+
+{% extends 'seller/base.html' %}
+{% load static %}
+{% block title %} home {% endblock %}
+
+{% block content %}
+{% for item in products %}
+   {{ item.prod_name }}
+{% endfor %}
+
+{% endblock %}

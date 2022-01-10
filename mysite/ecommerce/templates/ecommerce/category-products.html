@@ -1,0 +1,26 @@
+{% extends 'ecommerce/base.html' %}
+
+{% load static %}
+{% load humanize %}
+{% load ecommercetags %}
+
+{% block title %}MyCart{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h3>All {{category}} Products</h3> <br>
+    <div class="feature-product">
+        {% for item in category_prod %}
+        <div class="card" style="width: 16rem;">
+        <div class="d-flex justify-content-center">
+            <a href="{% url 'product-detail' category=item|to_model_name slug=item.slug %}">
+            <img src="{{ item.image1.url }}" height=140>
+            </a>
+        </div>
+        <h4>{{ item.prod_name|slice:":15" }}...</h4>
+        <h5>&#8377; {{ item.price|intcomma }}</h5>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

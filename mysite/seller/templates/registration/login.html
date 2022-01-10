@@ -1,0 +1,46 @@
+{% extends 'seller/base.html' %}
+
+{% load static %}
+
+{% block title %}MyCart{% endblock %}
+
+{% block content %}
+    <!-- Form Starting  -->
+
+        <div class="container">
+            <div class="row">
+              <div class="col-sm-6">
+                <form method="POST">
+                  {% csrf_token %}
+                    <div class="mb-3 m-5 w-50">
+                        <h5>Login/Signup to continue <br><br></h5>
+                        <div class="login">
+                          {% for field in form %}
+                              {{ field.label_tag }}
+                              {{ field }}
+                              {{ field.errors }}
+                          {% endfor %}
+                          
+                          {% if form.errors %}
+                            {{form.errors}}
+                          {% endif %}
+                        </div>
+                    </div>
+        
+                    <div class="loginSubmit mt-4 mx-5">
+                        <button>Login</button>
+                        <a href="{% url 'signup-page' %}">Signup</a>
+                    </div>
+                </form>
+              </div>
+
+              <div class="col-sm-6">
+                <h1 class="mt-5 mb-4">!Welcome to CART.in</h1>
+                <img  src="{% static 'ecommerce/images/SaleImage.png' %}" height="70%" width="110%" alt="">
+              </div>
+            </div>
+          </div>
+          <br>
+    <!-- Form Ending  -->
+
+{% endblock %}
