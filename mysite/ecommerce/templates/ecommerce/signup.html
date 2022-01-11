@@ -6,36 +6,31 @@
 
 {% block content %}
     <!-- Form Starting  -->
-
-        <div class="container">
-          <div class="row">
-            <div class="col-sm-6">
-              <form method="POST">
-                {% csrf_token %}
-                  <div class="mb-3 m-5 w-50">
-                      <h5>Signup <br><br></h5>
-                      {% for field in form %}
-                        <div class="login">
-                          {{ field.label_tag }}
-                          {{ field }}
-                          {{ field.errors }}
-                        </div>
-                      {% endfor %}
-                  </div>
-      
-                  <div class="loginSubmit mt-4 mx-5">
-                      <button>Signup</button>
-                  </div>
-              </form>
+    <div class="container mt-5">
+      <div class="d-flex justify-content-center">
+      <form method="POST" class="w-75 bg-success p-5">
+        {% csrf_token %}
+        <h5 class="text-center text-white">Signup to Continue</h5>
+        <div class="row login mt-4">
+          {% for field in form %}
+            <div class="col-6 mb-4">
+              <label class="form-label text-white">{{ field.label }}</label>
+              {{ field }}
+              {{ field.errors }}
             </div>
-
-            <div class="col-sm-6">
-              <h1 class="mt-5 mb-4">!Welcome to CART.in</h1>
-              <img  src="{% static 'ecommerce/images/SaleImage.png' %}" height="70%" width="110%" alt="">
-            </div>
-          </div>
+          {% endfor %}
+          
+          {% if form.errors %}
+            {{ form.errors }}
+          {% endif %}
         </div>
-        <br>
+  
+        <div class="loginSubmit mt-4">
+            <input class="btn btn-danger btn-outline-light" type="submit" value="Signup">
+        </div>
+      </form>
+      </div>
+    </div>
     <!-- Form Ending  -->
 
 {% endblock %}

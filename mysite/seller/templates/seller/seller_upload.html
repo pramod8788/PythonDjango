@@ -1,24 +1,43 @@
 {% extends 'seller/base.html'%}
 
+{% load static %}
+
 {% block title %} seller {% endblock %}
 
 {% block content %}
 
-
-<div class="container p-5 " >
-<form method="post" enctype="multipart/form-data" >
-    {% csrf_token %}
-    {% for field in form %}
-        <div class="form-control {% if field.errors %} errors {% endif %} width:30%">
-        {{ field.label_tag }}
-        <br>
-        {{ field }}
-        <br>
-        {{ field.errors }}
+<div class="container">
+    <div class="row">
+      <div class="col-sm-6 ">
+        <form method="POST" enctype='multipart/form-data'>
+          {% csrf_token %}
+            <div class="mb-3 m-3 ">
+                <h5>Upload Your Product <br><br></h5>
+                <div class="login">
+                    {% for field in form %}
+                        {{ field.label_tag }}
+                        {{ field }}
+                        {{ field.errors }}
+                    {% endfor %}
+                  
+                    {% if form.errors %}
+                        <small class="text-danger" >{{ field.errors|striptags }} </small>
+                    {% endif %}
+                </div>
+            </div>
         </div>
-    {% endfor %}
-    <br>
-    <input type="submit" class="btn btn-danger" value="Upload">
-</form>
-</div>
+
+            <div class="loginSubmit mt-4 mx-3">
+                <input class="btn btn-danger" type="submit" value="Upload">
+            </div>
+        </form>
+      </div>
+
+      <div class="col-sm-6">
+        <h1 class="mt-5 mb-4">!Welcome to CART.in</h1>
+        <img  src="{% static 'ecommerce/images/SaleImage.png' %}" height="70%" width="110%" alt="">
+      </div>
+    </div>
+  </div>
+  <br>
 {% endblock %}

@@ -7,16 +7,16 @@
 {% block content %}
     <!-- Form Starting  -->
 
-        <div class="container">
+        <div class="container mb-5">
             <div class="row">
               <div class="col-sm-6">
                 <form method="POST">
                   {% csrf_token %}
-                    <div class="mb-3 m-5 w-50">
-                        <h5>Login/Signup to continue <br><br></h5>
+                    <div class="m-5 w-50">
+                        <h5>Login to Continue</h5>
                         <div class="login">
                           {% for field in form %}
-                              {{ field.label_tag }}
+                              <label class="form-label mt-4">{{ field.label }}</label>
                               {{ field }}
                               {{ field.errors }}
                           {% endfor %}

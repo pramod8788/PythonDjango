@@ -87,7 +87,7 @@ class Fashion(models.Model):
     type = models.CharField(max_length=40, choices=type_choice)
     price = models.BigIntegerField()
     colour = models.CharField(max_length=20, null=True)
-    size = models.CharField(max_length=20, null=True)
+    size = models.CharField(max_length=20, blank=True)
     slug = models.SlugField(default="", db_index=True, null=True)
     seller_name = models.ForeignKey(Seller, on_delete=models.SET_NULL, null=True)
     in_stock = models.IntegerField()
@@ -105,10 +105,10 @@ class Fashion(models.Model):
 
 class HomeDecor(models.Model):
     type_choice = [
-        ('Bedsheets', 'Bedsheets'),
         ('Clocks', 'Clocks'),
         ('Lights', 'Lights'),
         ('Paintings & Posters', 'Paintings & Posters'),
+        ('Wall Shelves', 'Wall Shelves'),
     ]
 
     prod_name = models.CharField(max_length=400)

@@ -2,7 +2,7 @@
 
 {% load static %}
 
-{% block title %}MyCart{% endblock %}
+{% block title %}Seller{% endblock %}
 
 {% block content %}
     <!-- Form Starting  -->
@@ -28,8 +28,8 @@
                     </div>
         
                     <div class="loginSubmit mt-4 mx-5">
-                        <button>Login</button>
-                        <a href="{% url 'signup-page' %}">Signup</a>
+                        <button class="btn btn-danger">Login</button>
+                        <a class="btn btn-danger" href="{% url 'seller-signup' %}">Signup</a>
                     </div>
                 </form>
               </div>

@@ -8,7 +8,7 @@
 
 {% block content %}
 <div class="container">
-    <h3>All {{category}} Products</h3> <br>
+    <h3>All {{ category_prod.first|to_model_name }} Products</h3> <br>
     <div class="feature-product">
         {% for item in category_prod %}
         <div class="card" style="width: 16rem;">

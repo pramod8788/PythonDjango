@@ -54,7 +54,7 @@
         </div>
         
         <div class="col">
-            <h4 class="text-secondary">{{ product|to_model_name }}</h4>
+            <h4 class="text-secondary">{{ product|to_model_name }} / {{ product.type }}</h4>
             <h5>{{ product.prod_name }}</h5>
             <p>&#8377; {{ product.price|intcomma }}</p>
 
