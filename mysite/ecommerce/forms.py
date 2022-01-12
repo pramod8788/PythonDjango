@@ -3,6 +3,8 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.forms import AuthenticationForm, UsernameField
+from django.contrib import messages
+from django.core.exceptions import ValidationError
 
 
 User = get_user_model()
@@ -10,6 +12,14 @@ User = get_user_model()
 class LoginForm(AuthenticationForm):
     username = UsernameField(label='Enter Username', widget=forms.TextInput(attrs={'class':'form-control'}))
     password = forms.CharField(label='Enter Password', widget=forms.PasswordInput(attrs={'class':'form-control'}))
+    
+    def confirm_login_allowed(self, user):
+        if user.is_staff and not user.is_superuser:
+            raise ValidationError(
+                ("This account is not allowed here."),
+                code='inactive',
+            )
+
 
 class ModifiedUserForm(UserCreationForm):
     class Meta:

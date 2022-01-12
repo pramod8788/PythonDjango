@@ -22,7 +22,8 @@
         {% endfor %}
         
         {% if form.errors %}
-          {{ form.errors }}
+          <br>
+          {{ form.non_field_errors }}
         {% endif %}
       </div>
 

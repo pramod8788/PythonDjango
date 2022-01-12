@@ -10,71 +10,44 @@ from ecommerce import models
 
 User = get_user_model()
 
-class Sellerform(forms.Form):
+class Sellerform(forms.ModelForm):
     cat = models.Category.objects.all()
     cat_choice = []
     for item in cat:
         val = (item.category, item.category_name)
         cat_choice.append(val)
 
-    name = forms.CharField(max_length=200)
     cat = forms.ChoiceField(choices=cat_choice, label="Select Category", widget=forms.Select(attrs={'class':'form-control'}))
 
-    # labels = {
-    #     "prod_name": "Product's Name",
-    #     "type": "Product's Type",
-    #     "price": "Product's Price",
-    #     "colour": "Product's Colour",
-    #     "size": "Product's Size (Optional)",
-    #     "in_stock": "Product in Stock",
-    #     "info": "Product's More Description",
-    #     "image1": "Product's Image 1",
-    #     "image2": "Product's Image 2",
-    #     "image3": "Product's Image 3",
-    # }
+    class Meta:
+        model = models.Fashion
+        fields = "__all__"
+        exclude = ("slug", "seller_name")
+        labels = {
+            "prod_name": "Product's Name",
+            "type": "Product's Type",
+            "price": "Product's Price",
+            "colour": "Product's Colour",
+            "size": "Product's Size (Optional)",
+            "in_stock": "Product in Stock",
+            "info": "Product's More Description",
+            "image1": "Product's Image 1",
+            "image2": "Product's Image 2",
+            "image3": "Product's Image 3",
+        }
 
-    # widgets = {
-    #     'prod_name': forms.TextInput(attrs={'class':'form-control'}),
-    #     'type': forms.Select(attrs={'class':'form-control'}),
-    #     'price': forms.NumberInput(attrs={'class':'form-control'}),
-    #     'colour': forms.TextInput(attrs={'class':'form-control'}),
-    #     'size': forms.TextInput(attrs={'class':'form-control'}),
-    #     'in_stock': forms.NumberInput(attrs={'class':'form-control'}),
-    #     'info': forms.Textarea(attrs={'class':'form-control', 'rows': '2'}),
-    #     'image1': forms.FileInput(attrs={'class':'form-control'}),
-    #     'image2': forms.FileInput(attrs={'class':'form-control'}),
-    #     'image3': forms.FileInput(attrs={'class':'form-control'}),
-    # }
-
-    # class Meta:
-    #     model = models.Fashion
-    #     fields = "__all__"
-    #     exclude = ("slug", "seller_name")
-    #     labels = {
-    #         "prod_name": "Product's Name",
-    #         "type": "Product's Type",
-    #         "price": "Product's Price",
-    #         "colour": "Product's Colour",
-    #         "size": "Product's Size (Optional)",
-    #         "in_stock": "Product in Stock",
-    #         "info": "Product's More Description",
-    #         "image1": "Product's Image 1",
-    #         "image2": "Product's Image 2",
-    #         "image3": "Product's Image 3",
-    #     }
-
-    #     widgets = {
-    #         'prod_name': forms.TextInput(attrs={'class':'form-control'}),
-    #         'type': forms.Select(attrs={'class':'form-control'}),
-    #         'price': forms.NumberInput(attrs={'class':'form-control'}),
-    #         'colour': forms.TextInput(attrs={'class':'form-control'}),
-    #         'size': forms.TextInput(attrs={'class':'form-control'}),
-    #         'in_stock': forms.NumberInput(attrs={'class':'form-control'}),
-    #         'info': forms.Textarea(attrs={'class':'form-control', 'rows': '2'}),
-    #         'image1': forms.FileInput(attrs={'class':'form-control'}),
-    #         'image2': forms.FileInput(attrs={'class':'form-control'}),
-    #         'image3': forms.FileInput(attrs={'class':'form-control'}),
-    #     }
+        widgets = {
+            'prod_name': forms.TextInput(attrs={'class':'form-control'}),
+            'type': forms.Select(attrs={'class':'form-control'}),
+            'price': forms.NumberInput(attrs={'class':'form-control'}),
+            'colour': forms.TextInput(attrs={'class':'form-control'}),
+            'size': forms.TextInput(attrs={'class':'form-control'}),
+            'in_stock': forms.NumberInput(attrs={'class':'form-control'}),
+            'info': forms.Textarea(attrs={'class':'form-control', 'rows': '2'}),
+            'image1': forms.FileInput(attrs={'class':'form-control'}),
+            'image2': forms.FileInput(attrs={'class':'form-control'}),
+            'image3': forms.FileInput(attrs={'class':'form-control'}),
+        }
 
 
 class Sellersignup(UserCreationForm):
@@ -117,3 +90,4 @@ class Sellersignup(UserCreationForm):
 class LoginForm(AuthenticationForm):
     username = UsernameField(label="Enter Username", widget=forms.TextInput(attrs={'class':'form-control'}))
     password = forms.CharField(label="Enter Password", widget=forms.PasswordInput(attrs={'class':'form-control'}))
+    

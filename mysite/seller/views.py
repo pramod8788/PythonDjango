@@ -30,14 +30,18 @@ class Sellersignup(CreateView):
 
     def form_valid(self, form):
         data = super(Sellersignup, self).form_valid(form)
-
         phone, gst, aadhar = form.cleaned_data.get('phone_number'), form.cleaned_data.get('gst_id'), form.cleaned_data.get('aadhar_number')
         models.Seller.objects.create(user=self.object, phone_number=phone, gst_id=gst,aadhar_number=aadhar)
+        
+        self.object.is_staff = True
+        self.object.save()
+        username, password = form.cleaned_data.get('username'), form.cleaned_data.get('password1')
+        new_user = authenticate(username=username, password=password)
+        login(self.request, new_user)
         return data
 
 
 class SellerUpload(CreateView):
-    model = models.Electronic
     form_class = Sellerform
     template_name = 'seller/seller_upload.html'
     success_url = "/thankyou"
@@ -76,9 +80,12 @@ def loginPage(request):
 
         try:
             user = User.objects.get(username=username)
-            user = authenticate(
-                request, username=username, password=password, is_active=True
-            )
+            if user.is_staff != False:
+                user = authenticate(
+                    request, username=username, password=password, is_active=True,
+                )
+            else:
+                user = None
 
             if user is not None:
                 login(request, user)
