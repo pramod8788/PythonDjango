@@ -13,12 +13,12 @@
                 </li>
 
                 <li class="nav-item  mx-3">
-                    <a class="nav-link active" aria-current="page" href="{% url 'seller-services' %}">Services</a>
+                    <a class="nav-link active" aria-current="page" href="{% url 'seller-service' %}">Services</a>
                 </li>
 
                 {% if user.is_authenticated %}
                 <li class="nav-item  mx-3">
-                    <a class="nav-link active" aria-current="page" href="{% url 'seller-logout' %}">Logout</a>
+                    <a class="nav-link active" aria-current="page" href="{% url 'seller-logout' %}">Logout ({{ user }})</a>
                 </li>
 
                 <li class="nav-item  mx-3">

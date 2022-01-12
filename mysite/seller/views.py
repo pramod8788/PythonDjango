@@ -1,4 +1,5 @@
 from django.contrib.auth.models import User
+from django.http.response import HttpResponse
 from django.views.generic.base import TemplateView
 from django.views.generic.edit import CreateView
 from django.views.generic.list import ListView
@@ -36,10 +37,10 @@ class Sellersignup(CreateView):
 
 
 class SellerUpload(CreateView):
-    model = models.Fashion
-    form_class=Sellerform
-    template_name='seller/seller_upload.html'
-    success_url = "thankyou"
+    model = models.Electronic
+    form_class = Sellerform
+    template_name = 'seller/seller_upload.html'
+    success_url = "/thankyou"
 
 
 class Thankyou(TemplateView):
@@ -50,13 +51,15 @@ class Dashboard(ListView):
     template_name = 'seller/dashboard.html'
     context_object_name = 'products'
     
-    # @login_required(login_url='sellerlogin')
-    # @method_decorator(login_required)
     def get_queryset(self):
         model = self.kwargs['category']       
         return getattr(models, model).objects.filter(seller_name__user=self.request.user)
 
 
+class Sellerservice(TemplateView):
+    template_name = "seller/seller-service.html"
+
+    
 def logoutPage(request):
     logout(request)
     return redirect("seller-home")
@@ -86,3 +89,4 @@ def loginPage(request):
             messages.error(request, "User Not Found....")
 
     return render(request, "seller/login.html", {"form":form})
+
