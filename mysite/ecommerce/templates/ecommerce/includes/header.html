@@ -1,5 +1,8 @@
 <!-- Navbar starting -->
 {% load static %}
+{% load ecommercetags %}
+{% cat_names as category %}
+
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark text-white">
 <div class="container-fluid">
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
@@ -13,7 +16,7 @@
         </li>
 
         <li class="nav-item  mx-3">
-        <a class="nav-link active" aria-current="page" href="about.html">About Us</a>
+        <a class="nav-link active" aria-current="page" href="{% url 'about-page' %}">About Us</a>
         </li>
 
         <div class="dropdown  mx-3">
@@ -22,10 +25,13 @@
             Categories
         </button>
         <ul class="dropdown-menu bg-dark" aria-labelledby="dropdownMenuButton1">
-            <li><a class="dropdown-item text-white" href="{% url 'category-page' category="Electronic" %}">Electronics</a></li>
-            <li><a class="dropdown-item text-white" href="{% url 'category-page' category="Fashion" %}">Fashion</a></li>
-            <li><a class="dropdown-item text-white" href="{% url 'category-page' category="HomeDecor" %}">Home Decor</a></li>
-            <li><a class="dropdown-item text-white" href="{% url 'category-page' category="Mobile" %}">Mobiles</a></li>
+            {% for item in category %}
+            <li>
+                <a class="dropdown-item text-white" href="{% url 'category-page' item.category %}">
+                    {{ item.category_name }}
+                </a>
+            </li>
+            {% endfor %}
         </ul>
         </div>
 

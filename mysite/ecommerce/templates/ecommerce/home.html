@@ -13,21 +13,25 @@
     <div class="carousel-indicators">
       <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active"
         aria-current="true" aria-label="Slide 1"></button>
-      <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1"
-        aria-label="Slide 2"></button>
-      <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2"
-        aria-label="Slide 3"></button>
+      
+      {% comment %} This for loop is used for slides number {% endcomment %}
+      {% for item in carousel %}
+        <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="{{ forloop.counter }}"
+        aria-label="Slide {{ forloop.counter|add:1 }}"></button>
+      {% endfor %}
     </div>
+
     <div class="carousel-inner">
       <div class="carousel-item active">
-        <a href="{% url 'category-page' item.category.category %}">
-          <img src="{{ item.image.url }}" class="d-block w-100">
-          <h2>{{ item.desc }}... {{ item.offer }}% Off</h2>
+        <a href="{% url 'category-page' carousel.first.category.category %}">
+          <img src="{{ carousel.first.image.url }}" class="d-block w-100">
+          <h2>{{ carousel.first.desc }}... {{ carousel.first.offer }}% Off</h2>
           <p>Click to see more...</p>
         </a>
       </div>
 
       {% for item in carousel %}
+      {% if not forloop.first %}
       <div class="carousel-item">
         <a href="{% url 'category-page' item.category.category %}">
           <img src="{{ item.image.url }}" class="d-block w-100">
@@ -35,6 +39,7 @@
           <p>Click to see more...</p>
         </a>
       </div>
+      {% endif %}
       {% endfor %}
     </div>
     <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators"

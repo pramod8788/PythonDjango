@@ -41,10 +41,11 @@ class Sellersignup(CreateView):
         return data
 
 
-class SellerUpload(CreateView):
-    form_class = Sellerform
-    template_name = 'seller/seller_upload.html'
-    success_url = "/thankyou"
+# class SellerUpload(TemplateView):
+#     template_name = "admin/"
+
+def product_upload(request):
+    return redirect('/admin')
 
 
 class Thankyou(TemplateView):

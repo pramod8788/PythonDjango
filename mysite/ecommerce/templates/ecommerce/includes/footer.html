@@ -1,33 +1,20 @@
 <!-- Footer starts -->
 
+{% load ecommercetags %}
+{% cat_names as category %}
+
 <div class="footer">
 <div class="container">
     <div class="row">
     <div class="col p-2">
         Categories
+        {% for item in category %}
         <div class="row">
-        <div class="col">
-            <a href="">Fashion</a>
+            <div class="col">
+                <a href="{% url 'category-page' item.category %}">{{ item.category_name }}</a>
+            </div>
         </div>
-        </div>
-
-        <div class="row">
-        <div class="col">
-            <a href="category.html">Mobiles</a>
-        </div>
-        </div>
-
-        <div class="row">
-        <div class="col">
-            <a href="category.html">Electronics</a>
-        </div>
-        </div>
-
-        <div class="row">
-        <div class="col">
-            <a href="category.html">Home Decor</a>
-        </div>
-        </div>
+        {% endfor %}
     </div>
 
     <div class="col">

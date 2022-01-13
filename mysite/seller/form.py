@@ -11,12 +11,7 @@ from ecommerce import models
 User = get_user_model()
 
 class Sellerform(forms.ModelForm):
-    cat = models.Category.objects.all()
-    cat_choice = []
-    for item in cat:
-        val = (item.category, item.category_name)
-        cat_choice.append(val)
-
+    cat_choice = models.Category.objects.all().values_list('category', 'category_name')
     cat = forms.ChoiceField(choices=cat_choice, label="Select Category", widget=forms.Select(attrs={'class':'form-control'}))
 
     class Meta:

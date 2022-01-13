@@ -1,5 +1,11 @@
 from django.contrib import admin
+from django.http import request
 from . import models
+
+
+admin.site.site_url = '/seller'
+admin.site.site_header = 'Administration'
+admin.site.site_title = 'Seller'
 
 # Register your models here.
 class ElectronicAdmin(admin.ModelAdmin):

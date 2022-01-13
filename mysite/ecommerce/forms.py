@@ -30,9 +30,11 @@ class ModifiedUserForm(UserCreationForm):
     def __init__(self, *args, **kwargs):
         super(ModifiedUserForm, self).__init__(*args, **kwargs)
         self.fields["username"].widget.attrs['class'] = 'form-control'
+        self.fields["username"].widget.attrs['autofocus'] = False
         self.fields["username"].label = "Enter Username"
 
         self.fields["first_name"].widget.attrs['class'] = 'form-control'
+        self.fields["first_name"].widget.attrs['autofocus'] = True
         self.fields["first_name"].label = "Enter First Name"
 
         self.fields["last_name"].widget.attrs['class'] = 'form-control'

@@ -5,6 +5,7 @@ from django.views import View
 from django.views.generic.edit import CreateView
 from django.views.generic.detail import DetailView
 from django.views.generic.list import ListView
+from django.views.generic import TemplateView
 from django.contrib.auth.models import User
 from django.contrib.auth import get_user_model
 from django.contrib import messages
@@ -20,8 +21,7 @@ class HomeView(View):
 
     def contexData(self):
         try:
-            first_item = models.Carousel.objects.all()[0]
-            carousel_item = models.Carousel.objects.all().order_by('-pk')[:2]
+            carousel_item = models.Carousel.objects.all()
 
             homedecor_prod = models.HomeDecor.objects.all().order_by('-pk')[:4]
             fashion_prod = models.Fashion.objects.all().order_by('-pk')[:4]
@@ -38,7 +38,7 @@ class HomeView(View):
 
             context = {
                 "carousel":carousel_item,
-                "item":first_item,
+                # "item":first_item,
                 "electronic_prod":electronic_prod,
                 "fashion_prod":fashion_prod,
                 "homedecor_prod":homedecor_prod,
@@ -84,3 +84,6 @@ class CategoryPageView(ListView):
          model = self.kwargs['category']
          return getattr(models, model).objects.all().order_by('-pk')
 
+
+class AboutPageView(TemplateView):
+    template_name = 'ecommerce/about.html'
