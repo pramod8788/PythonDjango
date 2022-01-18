@@ -1,6 +1,8 @@
 from django.db import models
+from django.utils.text import slugify
 from django.contrib.auth.models import User
 from django.contrib.auth import get_user_model
+
 
 User = get_user_model()
 
@@ -14,7 +16,20 @@ class Category(models.Model):
         return self.category_name
 
     class Meta:
-        verbose_name_plural = 'Categories' 
+        verbose_name_plural = 'Categories'
+
+
+class Cart(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    product = models.CharField(max_length=500)
+    category = models.CharField(max_length=100, null=True)
+    quantity = models.IntegerField(default=1)
+
+    def __str__(self):
+        return f"{self.user} (Qty. {self.quantity}) ({self.product})"
+
+    class Meta:
+        verbose_name_plural = 'Cart Items'
 
 
 class Carousel(models.Model):
@@ -66,6 +81,10 @@ class Electronic(models.Model):
     image2 = models.ImageField(upload_to="ElectronicImages")
     image3 = models.ImageField(upload_to="ElectronicImages")
 
+    def save(self, *args, **kwargs):
+        self.slug = slugify(self.prod_name)
+        super(Electronic, self).save(*args, **kwargs)
+
     def __str__(self):
         return self.prod_name
 
@@ -87,7 +106,7 @@ class Fashion(models.Model):
     type = models.CharField(max_length=40, choices=type_choice)
     price = models.BigIntegerField()
     colour = models.CharField(max_length=20, null=True)
-    size = models.CharField(max_length=20, blank=True)
+    size = models.CharField(max_length=20, blank=True, null=True)
     slug = models.SlugField(default="", db_index=True, null=True)
     seller_name = models.ForeignKey(Seller, on_delete=models.SET_NULL, null=True)
     in_stock = models.IntegerField()
@@ -95,6 +114,10 @@ class Fashion(models.Model):
     image1 = models.ImageField(upload_to="FashionImages")
     image2 = models.ImageField(upload_to="FashionImages")
     image3 = models.ImageField(upload_to="FashionImages")
+
+    def save(self, *args, **kwargs):
+        self.slug = slugify(self.prod_name)
+        super(Fashion, self).save(*args, **kwargs)
 
     def __str__(self):
         return self.prod_name
@@ -124,6 +147,10 @@ class HomeDecor(models.Model):
     image2 = models.ImageField(upload_to="HomeDecorImages")
     image3 = models.ImageField(upload_to="HomeDecorImages")
 
+    def save(self, *args, **kwargs):
+        self.slug = slugify(self.prod_name)
+        super(HomeDecor, self).save(*args, **kwargs)
+
     def __str__(self):
         return self.prod_name
 
@@ -151,6 +178,10 @@ class Mobile(models.Model):
     image1 = models.ImageField(upload_to="MobileImages")
     image2 = models.ImageField(upload_to="MobileImages")
     image3 = models.ImageField(upload_to="MobileImages")
+
+    def save(self, *args, **kwargs):
+        self.slug = slugify(self.prod_name)
+        super(Mobile, self).save(*args, **kwargs)
 
     def __str__(self):
         return self.prod_name

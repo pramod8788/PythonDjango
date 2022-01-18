@@ -186,3 +186,17 @@
     margin: 0;
     padding: 0;
 }
+
+.UpdateProducts a{
+    color: greenyellow;
+    text-decoration: none;
+}
+
+.UpdateProducts a:hover{
+    color: rgb(171, 187, 146);
+}
+
+.success-info{
+    margin-top: 10%;
+    margin-bottom: 10%;
+}

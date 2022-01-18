@@ -1,5 +1,4 @@
 from django.contrib import admin
-from django.http import request
 from . import models
 
 
@@ -27,6 +26,7 @@ class MobileAdmin(admin.ModelAdmin):
 
 admin.site.register(models.Carousel)
 admin.site.register(models.Category)
+admin.site.register(models.Cart)
 admin.site.register(models.Seller)
 admin.site.register(models.Electronic, ElectronicAdmin)
 admin.site.register(models.Fashion, FashionAdmin)

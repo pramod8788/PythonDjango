@@ -1,4 +1,4 @@
-{% extends 'ecommerce/base.html' %}
+{% extends 'seller/base.html' %}
 
 {% load static %}
 {% load humanize %}
@@ -7,7 +7,20 @@
 {% block title %}MyCart{% endblock %}
 
 {% block content %}
-<div class="product-detail mt-5 px-5">
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    {{detail.prod_name}}
+    <img src="{{detail.image1.url}}" alt="">
+    <div class="product-detail mt-5 px-5">
     <div class="row">
         <div class="col p-4">
             <div id="carouselExampleControls" class="carousel slide" data-bs-ride="carousel">
@@ -47,9 +60,10 @@
                 <img class="mx-4" src="{{ product.image3.url }}" height=60>
             </div>
 
-            <div class="mt-4 mx-5 pb-4">
-                <a class="btn btn-outline-success mx-2 px-5" href="{% url 'buy-now' category=product|to_model_name slug=product.slug %}">Buy Now</a>
-                <a class="btn btn-outline-danger mx-2 px-5" href="{% url 'add-to-cart' category=product|to_model_name slug=product.slug %}">Add to Cart</a>
+            <div class="btn-grp mx-5 mt-5">
+ 
+                 <a href="{% url 'edit' category=product|to_model_name slug=product.slug %}" class="btn btn-outline-success mx-2 px-5">Edit</a>
+                 <a href="{% url 'delete' category=product|to_model_name slug=product.slug %}" class="btn btn-outline-danger mx-2 px-5">Delete</a>
             </div>
         </div>
         
@@ -71,4 +85,6 @@
         </div>
     </div>
 </div>
+</body>
+</html>
 {% endblock %}

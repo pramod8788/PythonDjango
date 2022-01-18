@@ -1,17 +1,16 @@
 from django.contrib.auth.models import User
-from django.http.response import HttpResponse
 from django.views.generic.base import TemplateView
 from django.views.generic.edit import CreateView
 from django.views.generic.list import ListView
-from ecommerce import models
-from django.views.generic.list import ListView
-from . form import Sellerform, Sellersignup, LoginForm 
 from django.views import generic
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
-from ecommerce import models
 from django.contrib.auth import get_user_model
+from django.views.generic.detail import DetailView
+from django.views.generic.edit import UpdateView, DeleteView
+from ecommerce import models
+from . import forms
 
 
 User = get_user_model()
@@ -22,18 +21,19 @@ class Home(generic.ListView):
     context_object_name = "category"
 
 
-class Sellersignup(CreateView):
-    form_class = Sellersignup
+class SellerSignupView(CreateView):
+    form_class = forms.SellerSignup
     template_name = 'seller/seller_signup.html'
     success_url = '/seller'
     model = User
 
     def form_valid(self, form):
-        data = super(Sellersignup, self).form_valid(form)
+        data = super(SellerSignupView, self).form_valid(form)
         phone, gst, aadhar = form.cleaned_data.get('phone_number'), form.cleaned_data.get('gst_id'), form.cleaned_data.get('aadhar_number')
         models.Seller.objects.create(user=self.object, phone_number=phone, gst_id=gst,aadhar_number=aadhar)
         
         self.object.is_staff = True
+        self.object.groups.add(1)
         self.object.save()
         username, password = form.cleaned_data.get('username'), form.cleaned_data.get('password1')
         new_user = authenticate(username=username, password=password)
@@ -41,18 +41,63 @@ class Sellersignup(CreateView):
         return data
 
 
-# class SellerUpload(TemplateView):
-#     template_name = "admin/"
+class ElectronicUploadView(CreateView):
+    form_class = forms.ElectronicForm
+    template_name = 'seller/seller_upload.html'
+    success_url = "/seller/"
 
-def product_upload(request):
-    return redirect('/admin')
+    def form_valid(self, form):
+        valid = super(ElectronicUploadView, self).form_valid(form)
+        seller = models.Seller.objects.get(user=self.request.user)
+        self.object.seller_name = seller
+        self.object.save()
+        return valid
 
 
-class Thankyou(TemplateView):
-    template_name = "seller/thankyou.html"
+class FashionUploadView(CreateView):
+    form_class = forms.FashionForm
+    template_name = 'seller/seller_upload.html'
+    success_url = "/seller/"
+
+    def form_valid(self, form):
+        valid = super(FashionUploadView, self).form_valid(form)
+        seller = models.Seller.objects.get(user=self.request.user)
+        self.object.seller_name = seller
+        self.object.save()
+        return valid
 
 
-class Dashboard(ListView):
+class HomeDecoreUploadView(CreateView):
+    form_class = forms.HomeDecorForm
+    template_name = 'seller/seller_upload.html'
+    success_url = "/seller/"
+
+    def form_valid(self, form):
+        valid = super(HomeDecoreUploadView, self).form_valid(form)
+        seller = models.Seller.objects.get(user=self.request.user)
+        self.object.seller_name = seller
+        self.object.save()
+        return valid
+
+
+class MobileUploadView(CreateView):
+    form_class = forms.MobileForm
+    template_name = 'seller/seller_upload.html'
+    success_url = "/seller/"
+
+    def form_valid(self, form):
+        valid = super(MobileUploadView, self).form_valid(form)
+        seller = models.Seller.objects.get(user=self.request.user)
+        self.object.seller_name = seller
+        self.object.save()
+        return valid
+
+
+class AddProductView(TemplateView):
+    template_name = "seller/add-product.html"
+
+
+class DashboardView(ListView):
     template_name = 'seller/dashboard.html'
     context_object_name = 'products'
     
@@ -64,6 +109,41 @@ class Dashboard(ListView):
 class Sellerservice(TemplateView):
     template_name = "seller/seller-service.html"
 
+
+class ProductDetailView(DetailView):
+    template_name = 'seller/detail.html'
+    context_object_name = 'product'
+
+    def get_queryset(self):
+        model = self.kwargs['category']
+        return getattr(models, model).objects.all()    
+   
+class ProductUpdateView(UpdateView):
+    fields = ["prod_name", "type", "price", "colour", "size", "in_stock", 'info', 'image1','image2','image3']
+    template_name = 'seller/seller_upload.html'
+    success_url = '/seller/SuccessfulUpdate/'
+
+    def get_queryset(self):
+        model = self.kwargs['category']
+        return getattr(models, model).objects.all()  
+
+
+class UpdateSuccessView(TemplateView):
+    template_name = 'seller/successfulupdate.html'
+
+
+class ProductDeleteView(DeleteView):
+    template_name = 'seller/product_delete.html'
+    success_url = '/seller/SuccessfulDelete/'
+
+    def get_queryset(self):
+        model = self.kwargs['category']
+        return getattr(models, model).objects.all()  
+
+
+class DeleteSuccessView(TemplateView):
+    template_name = 'seller/successfulupdate.html'
+
     
 def logoutPage(request):
     logout(request)
@@ -73,7 +153,7 @@ def loginPage(request):
     if request.user.is_authenticated:
         return redirect("seller-home")
 
-    form = LoginForm()
+    form = forms.LoginForm()
 
     if request.method == "POST":
         username = request.POST.get("username").lower()
@@ -97,4 +177,3 @@ def loginPage(request):
             messages.error(request, "User Not Found....")
 
     return render(request, "seller/login.html", {"form":form})
-
