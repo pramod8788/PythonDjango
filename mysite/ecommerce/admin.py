@@ -24,6 +24,8 @@ class MobileAdmin(admin.ModelAdmin):
     list_filter = ('type', 'seller_name',)
 
 
+admin.site.register(models.Address)
+admin.site.register(models.Contact)
 admin.site.register(models.Carousel)
 admin.site.register(models.Category)
 admin.site.register(models.Cart)

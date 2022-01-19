@@ -9,6 +9,22 @@ from ecommerce import models
 
 User = get_user_model()
 
+class ContactUsForm(forms.ModelForm):
+    class Meta:
+        model = models.Contact
+        fields = "__all__"
+        labels = {
+            "full_name": "Enter Your Full Name",
+            "email": "Enter Email",
+            "message": "Drop the Message"
+        }
+        widgets = {
+            "full_name": forms.TextInput(attrs={"class":"form-control"}),
+            "email": forms.EmailInput(attrs={"class":"form-control"}),
+            "message": forms.Textarea(attrs={"class":"form-control", "rows":3})
+        }
+
+
 class FashionForm(forms.ModelForm):
     class Meta:
         model = models.Fashion

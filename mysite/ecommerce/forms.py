@@ -3,11 +3,58 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.forms import AuthenticationForm, UsernameField
-from django.contrib import messages
 from django.core.exceptions import ValidationError
+from . import models
 
 
 User = get_user_model()
+
+class AddressForm(forms.ModelForm):
+    class Meta:
+        model = models.Address
+        fields = "__all__"
+        exclude = ["user"]
+
+        labels = {
+            "full_name": "Full Name",
+            "phone_num": "Phone Number",
+            "building_num_name": "House/Building/Flat - Number and Name",
+            "area_colony": "Road/Street/Colony/Area",
+            "landmark": "Nearby Landmark (Optional)",
+            "pincode": "Pincode",
+            "city": "City",
+            "state": "State",
+            "address_type": "Address Type",
+        }
+
+        widgets = {
+            'full_name': forms.TextInput(attrs={'class':'form-control'}),
+            'phone_num': forms.TextInput(attrs={'class':'form-control'}),
+            'building_num_name': forms.TextInput(attrs={'class':'form-control'}),
+            'area_colony': forms.TextInput(attrs={'class':'form-control'}),
+            'landmark': forms.TextInput(attrs={'class':'form-control'}),
+            'pincode': forms.NumberInput(attrs={'class':'form-control'}),
+            'city': forms.TextInput(attrs={'class':'form-control'}),
+            'state': forms.TextInput(attrs={'class':'form-control'}),
+            'address_type': forms.Select(attrs={'class':'form-control'}),
+        }
+
+
+class ContactUsForm(forms.ModelForm):
+    class Meta:
+        model = models.Contact
+        fields = "__all__"
+        labels = {
+            "full_name": "Enter Your Full Name",
+            "email": "Enter Email",
+            "message": "Drop the Message"
+        }
+        widgets = {
+            "full_name": forms.TextInput(attrs={"class":"form-control"}),
+            "email": forms.EmailInput(attrs={"class":"form-control"}),
+            "message": forms.Textarea(attrs={"class":"form-control", "rows":3})
+        }
+
 
 class LoginForm(AuthenticationForm):
     username = UsernameField(label='Enter Username', widget=forms.TextInput(attrs={'class':'form-control'}))

@@ -21,6 +21,7 @@ urlpatterns = [
     path('Edit/<str:category>/<slug:slug>/', views.ProductUpdateView.as_view(),name='edit'),
     path("SuccessfulUpdate/", views.UpdateSuccessView.as_view(), name="success"),
     path('SellerService/', views.Sellerservice.as_view(),name='seller-service'),
+    path('contactus/', views.ContactUsView.as_view(), name='seller-contact-us-page'),
     path('Delete/<str:category>/<slug:slug>/', views.ProductDeleteView.as_view(), name='delete'),
     path("SuccessfulDelete/", views.DeleteSuccessView.as_view(), name="success"),
 ]

@@ -1,16 +1,16 @@
+from django.contrib import messages
+from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
 from django.contrib.auth import authenticate, login, logout
-from django.shortcuts import render, redirect
-from django.urls.base import reverse_lazy
 from django.contrib.auth.decorators import login_required
 from django.views import View
+from django.views.generic import TemplateView
 from django.views.generic.edit import CreateView
 from django.views.generic.detail import DetailView
 from django.views.generic.list import ListView
-from django.views.generic import TemplateView
-from django.contrib.auth.models import User
-from django.contrib.auth import get_user_model
-from django.contrib import messages
 from django.urls import reverse
+from django.urls.base import reverse_lazy
+from django.shortcuts import render, redirect
 from . import models
 from . import forms
 import random
@@ -27,8 +27,9 @@ class HomeView(View):
             homedecor_prod = models.HomeDecor.objects.all().order_by('-pk')[:4]
             fashion_prod = models.Fashion.objects.all().order_by('-pk')[:4]
             electronic_prod = models.Electronic.objects.all().order_by('-pk')[:6]
+            mobile_prod = models.Mobile.objects.all().order_by('-pk')
 
-            combined_list = list(electronic_prod) + list(fashion_prod) + list(homedecor_prod)
+            combined_list = list(electronic_prod) + list(fashion_prod) + list(homedecor_prod) + list(mobile_prod)
             result_list = []
             for i in range(20):
                 val = random.choice(combined_list)
@@ -89,16 +90,78 @@ class AboutPageView(TemplateView):
     template_name = 'ecommerce/about.html'
 
 
-def logoutPage(request):
-    logout(request)
-    return redirect("home")
+class ContactUsView(CreateView):
+    form_class = forms.ContactUsForm
+    template_name = 'ecommerce/contactus.html'
+    success_url = '/'
+
+
+class AddAddressPageView(CreateView):
+    template_name = 'ecommerce/add-address.html'
+    form_class = forms.AddressForm
+    success_url = '/Add-address'
+
+    def get_context_data(self, **kwargs):
+        data = super().get_context_data(**kwargs)
+        data["old_address"] = models.Address.objects.filter(user=self.request.user)
+        return data
+
+    def form_valid(self, form):
+        valid_data =  super(AddAddressPageView, self).form_valid(form)
+        self.object.user = self.request.user
+        self.object.save()
+        return valid_data
+
+
+class PaymentPageView(TemplateView):
+    template_name = "ecommerce/payment-page.html"
+
+    def get_context_data(self, **kwargs):
+        context_data = super().get_context_data(**kwargs)
+        
+        address = models.Address.objects.get(id=self.kwargs['pk'])
+        context_data["address"] = address
+        
+        cart_item = models.Cart.objects.filter(user=self.request.user)
+        items_list = []
+        price_list = []
+        for item in cart_item:
+            val = getattr(models, item.category).objects.get(slug=item.product)
+            a = val.price * item.quantity
+            price_list.append(a)
+            items_list.append([val, item])
+
+        total_amount = sum(price_list)
+        context_data["item_list"] = items_list
+        context_data["price_list"] = price_list
+        context_data["total_amount"] = total_amount
+
+        return context_data
 
 
 @login_required(login_url="login")
 def cartPage(request):
     if request.method == "POST":
-        item = request.POST.get('cart_item')
-        models.Cart.objects.get(pk=item).delete()
+        quantity = request.POST.get('quantity')
+        if quantity == 'all':
+            item = request.POST.get('cart_item')
+            models.Cart.objects.get(pk=item).delete()
+
+        elif quantity == 'plus':
+            item = request.POST.get('cart_item')
+            obj = models.Cart.objects.get(pk=item)
+            if obj.quantity < 10:
+                obj.quantity += 1
+                obj.save()
+
+        elif quantity == 'minus':
+            item = request.POST.get('cart_item')
+            obj = models.Cart.objects.get(pk=item)
+            if obj.quantity > 1:
+                obj.quantity -= 1
+                obj.save()
+            else:
+                obj.delete()
 
     cart_item = models.Cart.objects.filter(user=request.user)
     items_list = []

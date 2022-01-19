@@ -110,6 +110,12 @@ class Sellerservice(TemplateView):
     template_name = "seller/seller-service.html"
 
 
+class ContactUsView(CreateView):
+    form_class = forms.ContactUsForm
+    template_name = 'seller/contactus.html'
+    success_url = '/seller'
+
+
 class ProductDetailView(DetailView):
     template_name = 'seller/detail.html'
     context_object_name = 'product'

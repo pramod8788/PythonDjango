@@ -7,6 +7,31 @@ from django.contrib.auth import get_user_model
 User = get_user_model()
 
 # Create your models here.
+class Address(models.Model):
+    type_choice = [
+        ("Home", "Home"),
+        ("Institute", "Institute"),
+        ("Work", "Work"),
+    ]
+
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
+    full_name = models.CharField(max_length=150)
+    phone_num = models.CharField(max_length=10)
+    building_num_name = models.CharField(max_length=250)
+    area_colony = models.CharField(max_length=250)
+    landmark = models.CharField(max_length=200, blank=True, null=True)
+    pincode = models.PositiveIntegerField()
+    city = models.CharField(max_length=100)
+    state = models.CharField(max_length=100)
+    address_type = models.CharField(max_length=100, choices=type_choice, null=True)
+
+    def __str__(self):
+        return f"{self.user} ({self.building_num_name}, {self.city})"
+
+    class Meta:
+        verbose_name_plural = 'Address'
+
+
 class Category(models.Model):
     category = models.CharField(max_length=50)
     category_name = models.CharField(max_length=50)
@@ -19,11 +44,23 @@ class Category(models.Model):
         verbose_name_plural = 'Categories'
 
 
+class Contact(models.Model):
+    full_name = models.CharField(max_length=100)
+    email = models.EmailField(max_length=50)
+    message = models.TextField()
+
+    def __str__(self):
+        return f"{self.full_name} ({self.email})"
+
+    class Meta:
+        verbose_name_plural = 'Contact Us'
+
+
 class Cart(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     product = models.CharField(max_length=500)
     category = models.CharField(max_length=100, null=True)
-    quantity = models.IntegerField(default=1)
+    quantity = models.PositiveIntegerField(default=1)
 
     def __str__(self):
         return f"{self.user} (Qty. {self.quantity}) ({self.product})"
