@@ -1,3 +1,4 @@
+from re import T
 from django.contrib import messages
 from django.contrib.auth.models import User
 from django.contrib.auth import get_user_model
@@ -7,7 +8,6 @@ from django.views import View
 from django.views.generic import TemplateView
 from django.views.generic.edit import CreateView
 from django.views.generic.detail import DetailView
-from django.views.generic.list import ListView
 from django.urls import reverse
 from django.urls.base import reverse_lazy
 from django.shortcuts import render, redirect
@@ -77,13 +77,37 @@ class ProductDetilView(DetailView):
         return getattr(models, model).objects.all()      
 
 
-class CategoryPageView(ListView):
+class CategoryPageView(TemplateView):
     template_name = 'ecommerce/category-products.html'
-    context_object_name = 'category_prod'
+    # context_object_name = 'category_prod'
 
-    def get_queryset(self):
+    def get_context_data(self, **kwargs):
+        context_value = super().get_context_data(**kwargs)
         model = self.kwargs['category']
-        return getattr(models, model).objects.all().order_by('-pk')
+
+        all_products = getattr(models, model).objects.all().order_by('-pk')
+
+        type_filter = self.request.GET.get("type_filter")
+        if type_filter == "price_low":
+            all_products = getattr(models, model).objects.all().order_by('price')
+        elif type_filter == "price_high":
+            all_products = getattr(models, model).objects.all().order_by('-price')
+        elif type_filter:
+            all_products = getattr(models, model).objects.filter(type=type_filter)
+
+        context_value["category_prod"] = all_products
+        
+        choice_type = getattr(models, model).type_choice
+        list_choice = []
+        for item in choice_type:
+            list_choice.append(item[0])
+        context_value["type_filter"] = list_choice
+
+        return context_value
+
+    # def get_queryset(self):
+    #     model = self.kwargs['category']
+    #     return getattr(models, model).objects.all().order_by('-pk')
 
 
 class AboutPageView(TemplateView):
