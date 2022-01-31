@@ -89,6 +89,7 @@ def createCourse(request):
     if request.method == "POST":
         form = courseForm(request.POST)
         if form.is_valid():
+            print(form)
             courses = form.save(commit=False)
             courses.user = request.user
             courses.save()

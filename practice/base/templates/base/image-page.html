@@ -1,0 +1,36 @@
+{% extends 'base/base.html' %}
+
+{% load crispy_forms_tags %}
+{% load static %}
+
+{% block content %}
+    {% if images %}
+        <div class="container mt-5">
+            <div class="row">
+                <div class="col">
+                    <img src="{{ images.uploads.url }}" class="rounded" width="100%">
+                    <a href="{% url 'image-info' %}" class="btn btn-light btn-outline-dark mt-3">Next</a>
+                </div>
+
+                <div class="col">
+                    <form class="rate-form" method="POST" id="{{ images.id }}">
+                        {% csrf_token %}
+                        <button type="submit" class="fa fa-star fa-3x my-btn" id="first"></button>
+                        <button type="submit" class="fa fa-star fa-3x my-btn" id="second"></button>
+                        <button type="submit" class="fa fa-star fa-3x my-btn" id="third"></button>
+                        <button type="submit" class="fa fa-star fa-3x my-btn" id="fourth"></button>
+                        <button type="submit" class="fa fa-star fa-3x my-btn" id="fifth"></button>
+                    </form>
+                    <br>
+                    <div id="confirm-box"></div>
+                </div>
+            </div>
+        </div>
+    {% else %}
+        <h1>Nothing to Rate</h1>
+    {% endif %}
+{% endblock %}
+
+{% block script %}
+<script src="{% static 'base/js/image-page.js' %}"></script>
+{% endblock script %}
