@@ -1,7 +1,7 @@
 from django.http import HttpResponse, JsonResponse
 from django.views.generic.list import ListView
 from django.views.generic.edit import CreateView
-from django.shortcuts import render
+from django.shortcuts import redirect, render
 from . import forms
 from . import models
 import json
@@ -51,8 +51,10 @@ def fileupload(request):
 # Both Views are for star rating
 def image_page(request):
     images = models.file.objects.filter(rating=0).order_by("?").first()
+    all_images = models.file.objects.all()
     context = {
-        "images": images
+        "images": images,
+        "all_images": all_images,
     }
     return render(request, "base/image-page.html", context)
 
@@ -65,3 +67,23 @@ def image_rate(request):
         obj.save()
         return JsonResponse({'success':'True', 'score': rate_val})
     return JsonResponse({'success': 'False'})
+
+def image_like(request):
+    if request.method == 'POST':
+        post_id = request.POST.get('post_id')
+        value = request.POST.get('value')
+        image_obj = models.file.objects.get(id=post_id)
+        
+        if value == 'Like':
+            image_obj.like = 'Like'
+        else:
+            image_obj.like = 'Unlike'
+        image_obj.save()
+        return JsonResponse({"success": "True"})
+    return JsonResponse({"success": "False"})
+
+def rating_remove(request, id):
+    image_obj = models.file.objects.get(id=id)
+    image_obj.rating = 0
+    image_obj.save()
+    return redirect('image-info')

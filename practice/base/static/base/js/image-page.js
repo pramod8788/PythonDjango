@@ -114,3 +114,34 @@ if(one){
         })
     }))
 }
+
+$('.like-form').submit(function(e){
+    e.preventDefault()
+
+    const image_id = $(this).attr('id')
+
+    const likeText = $(`.like-btn${image_id}`).text()
+    const trimLikeText = $.trim(likeText)
+    
+    const url = $(this).attr('action')
+
+    $.ajax({
+        type: 'POST',
+        url: url,
+        data: {
+            'csrfmiddlewaretoken': $('input[name=csrfmiddlewaretoken]').val(),
+            'post_id': image_id,
+            'value': trimLikeText,
+        },
+        success: function(response) {
+            if(trimLikeText === 'Unlike'){
+                $(`.like-btn${image_id}`).text('Like')
+            }else{
+                $(`.like-btn${image_id}`).text('Unlike')
+            }
+        },
+        error: function(response){
+            console.log('error', response)
+        }
+    })
+})

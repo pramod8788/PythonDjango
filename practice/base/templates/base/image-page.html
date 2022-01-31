@@ -4,31 +4,70 @@
 {% load static %}
 
 {% block content %}
+<div class="container mt-5">
     {% if images %}
-        <div class="container mt-5">
-            <div class="row">
-                <div class="col">
-                    <img src="{{ images.uploads.url }}" class="rounded" width="100%">
-                    <a href="{% url 'image-info' %}" class="btn btn-light btn-outline-dark mt-3">Next</a>
-                </div>
+        <div class="row">
+            <div class="col">
+                <img src="{{ images.uploads.url }}" class="rounded" width="100%">
+                <a href="{% url 'image-info' %}" class="btn btn-light btn-outline-dark mt-3">Next</a>
+            </div>
 
-                <div class="col">
-                    <form class="rate-form" method="POST" id="{{ images.id }}">
-                        {% csrf_token %}
-                        <button type="submit" class="fa fa-star fa-3x my-btn" id="first"></button>
-                        <button type="submit" class="fa fa-star fa-3x my-btn" id="second"></button>
-                        <button type="submit" class="fa fa-star fa-3x my-btn" id="third"></button>
-                        <button type="submit" class="fa fa-star fa-3x my-btn" id="fourth"></button>
-                        <button type="submit" class="fa fa-star fa-3x my-btn" id="fifth"></button>
-                    </form>
+            <div class="col">
+                <form class="rate-form" method="POST" id="{{ images.id }}">
+                    {% csrf_token %}
+                    <button type="submit" class="fa fa-star fa-3x my-btn" id="first"></button>
+                    <button type="submit" class="fa fa-star fa-3x my-btn" id="second"></button>
+                    <button type="submit" class="fa fa-star fa-3x my-btn" id="third"></button>
+                    <button type="submit" class="fa fa-star fa-3x my-btn" id="fourth"></button>
+                    <button type="submit" class="fa fa-star fa-3x my-btn" id="fifth"></button>
+                </form>
                     <br>
-                    <div id="confirm-box"></div>
-                </div>
+                <div id="confirm-box"></div>
             </div>
         </div>
     {% else %}
-        <h1>Nothing to Rate</h1>
+        <h1 class="text-center my-4">Nothing to Rate...</h1>
     {% endif %}
+        
+    <h2 class="text-center my-4">All Images</h2>
+    <div class="row">
+        {% for image in all_images %}
+            <div class="col-3">
+                <img src="{{ image.uploads.url }}" class="rounded" width="100%">
+                <form action="{% url 'image-like' %}" class="like-form" method="POST" id="{{ image.id }}">
+                    {% csrf_token %}
+                    <button class="btn btn-light btn-outline-primary mt-2 like-btn{{ image.id }}">
+                        {% if image.like == 'Like' %}
+                            Unlike
+                        {% else %}
+                            Like
+                        {% endif %}
+                    </button>
+                </form>
+
+                <div class="rating-box mt-2">
+                    <h5>
+                        Ratings:
+                        {% for i in '12345'|make_list %}
+                            {% if forloop.counter <= image.rating %}
+                                <span class="fa fa-star checked"></span>
+                            {% else %}
+                                <span class="fa fa-star"></span>
+                            {% endif %}
+                        {% endfor %}
+                    </h5>
+                </div>
+
+                <form action="{% url 'rating-remove' image.id %}" method="POST">
+                    {% csrf_token %}
+                    <button class="btn btn-light btn-outline-danger mt-2 mb-4">
+                        Remove Ratings
+                    </button>
+                </form>
+            </div>
+        {% endfor %}
+    </div>
+</div>
 {% endblock %}
 
 {% block script %}
