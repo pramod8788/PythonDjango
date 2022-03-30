@@ -1,1 +1,1 @@
-# Counselling_System
+Python Django Projects and Practiced codes.
