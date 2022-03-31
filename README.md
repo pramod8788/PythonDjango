@@ -1,1 +1,1 @@
-Python Django Projects and Practiced codes.
+Python Django Projects and Practiced Codes.
