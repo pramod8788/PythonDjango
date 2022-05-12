@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>TO DO</title>
+
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+
+	<link href="https://fonts.googleapis.com/css?family=Montserrat&display=swap" rel="stylesheet">
+
+	<style type="text/css">
+		body{
+		  background: rgb(54,217,182);
+		  background: linear-gradient(90deg, rgba(54,217,182,1) 0%, rgba(32,152,126,1) 43%, rgba(0,212,255,1) 100%);
+		}
+
+
+		h1, h2, h3, h4, h5, p, span, strike{
+		  font-family: 'Montserrat', sans-serif;
+
+		}
+	</style>
+
+</head>
+<body>
+<div class="container">
+	<form class="w-50 mt-5 bg-light p-5" id="login-form">
+		<div class="mb-3">
+			<label class="form-label">Username</label>
+			<input type="text" class="form-control" id="username">
+		</div>
+		<div class="mb-3">
+			<label class="form-label">Password</label>
+			<input type="password" class="form-control" id="password">
+		</div>
+		<h6 id="status-msg"></h6>
+		<button type="submit" class="btn btn-outline-info">Submit</button>
+	  </form>
+</div>
+
+<script type="text/javascript">
+
+	function getCookie(name) {
+		var cookieValue = null;
+		if (document.cookie && document.cookie !== '') {
+			var cookies = document.cookie.split(';');
+			for (var i = 0; i < cookies.length; i++) {
+				var cookie = cookies[i].trim();
+				// Does this cookie string begin with the name we want?
+				if (cookie.substring(0, name.length + 1) === (name + '=')) {
+					cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+					break;
+				}
+			}
+		}
+		return cookieValue;
+	}
+	var csrftoken = getCookie('csrftoken');
+
+	var loginForm = document.getElementById("login-form")
+	loginForm.addEventListener('submit', function(e){
+		e.preventDefault()
+		
+		var url = 'http://127.0.0.1:8000/api/login-page/'
+		
+		var username = document.getElementById("username").value
+		var password = document.getElementById("password").value
+
+		fetch(url, {
+			method:'POST',
+			headers:{
+				'Content-type':'application/json',
+				'X-CSRFToken':csrftoken,
+			},
+			body: JSON.stringify({'username':username, 'password':password})
+		}
+		).then(function(response){
+			return response.json()
+		}).then(function(res){
+			var statusMsg = document.getElementById('status-msg')
+			status = res['Login']
+			if(status == 'true'){
+				statusMsg.innerHTML = "Login Success"
+			}else{
+				statusMsg.innerHTML = "Login Failed"
+			}
+		})
+	})
+</script>
+
+</body>
+</html>

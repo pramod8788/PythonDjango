@@ -2,6 +2,8 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from .models import Task
 from .serializers import TaskSerializer
+from django.contrib.auth.models import User
+from django.contrib.auth import authenticate, login
 
 # Create your views here.
 @api_view(['GET'])
@@ -20,8 +22,14 @@ def apiOverview(request):
 @api_view(['GET'])
 def taskList(request):
     tasks = Task.objects.all()
+    # print(tasks)
     serialized = TaskSerializer(tasks, many=True)
-    return Response(serialized.data)
+    # print("\n",serialized)
+    # print("\n",serialized.data)
+    res = Response(serialized.data)
+    # print("\n",res)
+    # print("\n",res.data)
+    return res
 
 
 @api_view(['GET'])
@@ -60,3 +68,22 @@ def taskDelete(request, pk):
     task.delete()
 
     return Response("Item Deleted.")
+
+@api_view(['POST'])
+def login(request):
+    data = request.data
+    username = data['username']
+    password = data['password']
+
+    try:
+        user = User.objects.get(username=username)
+        user = authenticate(request, username=username, password=password, is_active=True)
+
+        if user is not None:
+            # login(request, user)
+            return Response({"Login": "true"})
+        else:
+            return Response({"Login": "false"})
+    except:
+        print("User not found")
+        return Response({"Login": "false"})
