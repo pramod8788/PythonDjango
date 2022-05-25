@@ -1,0 +1,10 @@
+DEBUG=1
+SECRET_KEY=django-insecure-58i(egni*#fh^9n!z2a3$$x_k#!wedh*heav+=3d9u#^yj)0z^
+DJANGO_ALLOWED_HOSTS=localhost 127.0.0.1 [::1]
+SQL_ENGINE=django.db.backends.mysql
+SQL_DATABASE=djangodemo
+SQL_USER=admin
+SQL_PASSWORD=addweb123
+SQL_HOST=demo-aws.cibh0y9gtcvi.us-west-2.rds.amazonaws.com
+SQL_PORT=3306
+DATABASE_URL=postgres://postgres:postgres@postgres:5432/django_db
