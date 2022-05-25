@@ -8,7 +8,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-%if-$dzqfrf507#^gq6(%udlctqn4fyttszzylhvhk9q5-9hk^'
+SECRET_KEY = 'django-insecure-+jm0)**9485z-wi=htjm8k+^%d89fyr$61wypp7@1c(i(i84(='
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -26,14 +26,10 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
-    'django_cleanup.apps.CleanupConfig',
-    'django.contrib.humanize',
-    'ecommerce',
-    'seller',
+    'mainapp',
+    'django_celery_results',
+    'django_celery_beat',
 ]
-
-INSTALLED_APPS.append('user_unique_email')
-AUTH_USER_MODEL = 'user_unique_email.User'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -45,7 +41,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-ROOT_URLCONF = 'mysite.urls'
+ROOT_URLCONF = 'celery_with_django.urls'
 
 TEMPLATES = [
     {
@@ -63,7 +59,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'mysite.wsgi.application'
+WSGI_APPLICATION = 'celery_with_django.wsgi.application'
 
 
 # Database
@@ -113,16 +109,18 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 
-MEDIA_ROOT = BASE_DIR / 'uploads'
-MEDIA_URL = '/user-media/'
-
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+CELERY_BROKER_URL = 'redis://127.0.0.1:6379'
+CELERY_ACCEPT_CONTENT = ['application/json']
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_TIMEZONE = 'Asia/Kolkata'
 
-LOGOUT_REDIRECT_URL = 'home'
-LOGIN_REDIRECT_URL = 'home'
+CELERY_RESULT_BACKEND = 'django-db'
 
-
+# Celery beat 
+CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers:DatabaseScheduler'
