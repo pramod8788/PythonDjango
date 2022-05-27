@@ -15,6 +15,8 @@ class HomeView(ListView):
     context_object_name = "info_items"
 
     def get_context_data(self, **kwargs):
+        print("I am view for testing custom middleware.")
+
         form = forms.InfoForm()
         context = super().get_context_data(**kwargs)
         context["form"] = form

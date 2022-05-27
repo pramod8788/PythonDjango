@@ -38,6 +38,11 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+
+    # 'base.middlewares.my_middleware', # This is for function based
+    'base.middlewares.MyMiddleware', # This is for Class based
+    'base.middlewares.FatherMiddleware', # This is for Class based
+    'base.middlewares.MotherMiddleware', # This is for Class based
 ]
 
 ROOT_URLCONF = 'practice.urls'

@@ -28,8 +28,11 @@ INSTALLED_APPS = [
 
     'mainapp',
     'send_mail_app',
+    'notification_app',
+
     'django_celery_results',
     'django_celery_beat',
+    'channels',
 ]
 
 MIDDLEWARE = [
@@ -55,12 +58,15 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+
+                'mainapp.custom_context_processors.notifications',
             ],
         },
     },
 ]
 
 WSGI_APPLICATION = 'celery_with_django.wsgi.application'
+ASGI_APPLICATION = 'celery_with_django.asgi.application'
 
 
 # Database
@@ -98,7 +104,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Kolkata'
 
 USE_I18N = True
 
@@ -115,6 +121,15 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            "hosts": [('127.0.0.1', 6379)],
+        },
+    },
+}
+
 CELERY_BROKER_URL = 'redis://127.0.0.1:6379'
 CELERY_ACCEPT_CONTENT = ['application/json']
 CELERY_RESULT_SERIALIZER = 'json'
@@ -126,11 +141,12 @@ CELERY_RESULT_BACKEND = 'django-db'
 # Celery beat 
 CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers:DatabaseScheduler'
 
+
 # SMTP Settings
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_USE_TLS = True
 EMAIL_HOST = "smtp.gmail.com"
 EMAIL_PORT = 587
-EMAIL_HOST_USER = 'himanshusharma01998@gmail.com'
-EMAIL_HOST_PASSWORD = 'gjqnudstkzzymnfb'
+EMAIL_HOST_USER = '<Your Host mail id>'
+EMAIL_HOST_PASSWORD = 'Secret Password'
 DEFAULT_FROM_EMAIL = 'Celery <himanshusharma01998@gmail.com>'
