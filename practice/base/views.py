@@ -2,6 +2,7 @@ from django.http import HttpResponse, JsonResponse
 from django.views.generic.list import ListView
 from django.views.generic.edit import CreateView
 from django.shortcuts import redirect, render
+from django.template.response import TemplateResponse
 from . import forms
 from . import models
 import json
@@ -89,3 +90,13 @@ def rating_remove(request, id):
     image_obj.rating = 0
     image_obj.save()
     return redirect('image-info')
+
+def excep_test(request):
+    print("I am Excep View")
+    a = 10 / 0
+    return HttpResponse("This is exception view")
+
+def user_info(request):
+    print("I am User Info View")
+    context = {"name": "Ramu"}
+    return TemplateResponse(request, 'base/user-info.html', context)

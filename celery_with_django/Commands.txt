@@ -5,7 +5,7 @@ to set concurrency use below cmd
 $ celery -A <django-project-name>.celery worker --concurrency=5 -l info
 
 Use pool as required one of the option is solo
-$ celery -A <django-project-name>.celery worker --pool=solo -l info
+$ celery -A <django-project-name>.celery worker --psoloool= -l info
 
 
 Start celery beat with below command

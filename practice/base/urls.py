@@ -10,4 +10,6 @@ urlpatterns = [
     path('image-rate/', views.image_rate, name="image-rate"),
     path('image-like/', views.image_like, name="image-like"),
     path('rating-remove/<int:id>', views.rating_remove, name="rating-remove"),
+    path('excep', views.excep_test, name="excep"),
+    path('user-info', views.user_info, name="user-info"),
 ]

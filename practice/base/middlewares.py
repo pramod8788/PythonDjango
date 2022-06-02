@@ -17,13 +17,32 @@ from django.shortcuts import HttpResponse
 class MyMiddleware:
     def __init__(self, get_response):
         self.get_response = get_response
-        print("One time Initialization")
+        # print("One time Initialization")
 
     def __call__(self, request):
-        print("This is before view")
+        # print("This is before view")
         response = self.get_response(request)
-        print("This is after view")
+        # print("This is after view")
         return response
+
+    def process_view(request, *args, **kwargs):
+        print("This process will execute before view")
+        # return HttpResponse("This is before View")
+        return None
+    
+    def process_exception(self, request, exception):
+        print("Exception Ocurred")
+        msg = exception
+        class_name = exception.__class__.__name__
+        print(class_name)
+        print(msg)
+        return HttpResponse(msg)
+
+    def process_template_response(self, request, response):
+        print("Process template response from middleware")
+        response.context_data["name"] = "Ramu Kaka"
+        return response
+    
 
 class FatherMiddleware:
     def __init__(self, get_response):

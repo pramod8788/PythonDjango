@@ -1,6 +1,7 @@
 from django.db import models
 from django.core.validators import MaxValueValidator, MinValueValidator
 
+
 # Create your models here.
 class info(models.Model):
     info = models.CharField(max_length=100)
