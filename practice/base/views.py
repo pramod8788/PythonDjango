@@ -45,6 +45,7 @@ class CreateInfoView(CreateView):
 def fileupload(request):
     if request.method == "POST":
         my_file = request.FILES.get("file")
+        print(my_file)
         models.file.objects.create(uploads=my_file)
         return HttpResponse('upload')
     else:
