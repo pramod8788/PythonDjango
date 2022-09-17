@@ -3,14 +3,14 @@ from django.contrib.auth.models import User
 from django.db.models.base import Model
 from django.db.models.deletion import CASCADE, SET_NULL
 from django.db.models.fields.related import ForeignKey
-
+from django.utils.timezone import now
 
 class course(models.Model):
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
     course_name = models.CharField(max_length=100)
     course_description = models.TextField(null=True)
     course_isactive = models.BooleanField(default=True)
-    course_created = models.DateTimeField(auto_now_add=True)
+    course_created = models.DateTimeField(default=now)
     course_updated = models.DateTimeField(auto_now=True)
 
     class Meta:
